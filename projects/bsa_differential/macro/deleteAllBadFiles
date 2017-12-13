@@ -1,0 +1,15 @@
+#!/bin/tcsh 
+
+set dir   = $1 
+set files = `ls $dir*`
+
+source ~/.login
+
+foreach file ($files)
+       set status =  `root -b -q 'checkFile.C("'$file'")' | grep "GOOD" | wc -l` > /dev/null
+
+
+       if ($status < 1) then 
+	    rm $file 
+       endif
+end

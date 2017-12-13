@@ -1,0 +1,34 @@
+#!/bin/tcsh 
+
+set outputDir = $1 
+set project   = $2
+set number    = `getJobNumber $outputDir $project`
+
+# Get environment and tools 
+source /group/clas/builds/environment.csh 
+cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_rad/keppel_rad               keppel_rad
+cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_norad/keppel_norad           keppel_norad
+cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_rad/inputFiles/radCorr.inp   rad.inp
+cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_norad/inputFiles/radCorr.inp norad.inp
+
+# Create if non-existent
+mkdir -p $outputDir/$project/JOB_$number 
+
+echo " >>> Starting job number $number "
+
+# running non-radiated events 
+./keppel_norad < norad.inp 
+h2root keppel_norad.rz 
+
+# running radiated events 
+./keppel_rad < rad.inp 
+h2root keppel_rad.rz
+
+# Do the correction histograms 
+# ./doRadiativeCorrection -LUND_RAD=rad.lund -LUND_NORAD=norad.lund -OUT=radCorr.$number.root
+
+cp keppel_rad.root   $outputDir/$project/JOB_$number 
+cp keppel_norad.root $outputDir/$project/JOB_$number 
+cp *.inp             $outputDir/$project/JOB_$number 
+
+echo " >>> Finished job number $number "

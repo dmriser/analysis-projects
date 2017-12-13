@@ -1,0 +1,17 @@
+JOBNAME:     MonteCarlo
+TRACK:       simulation
+OS:          centos65
+PROJECT:     e1f
+TIME:        720
+DISK_SPACE:  1024 MB
+MEMORY:      2048 MB
+MULTI_JOBS:  600
+
+COMMAND:    chmod +x goGenerateBoth; ./goGenerateBoth /volatile/clas/clas12/dmriser/analysis/mcdata genBoth_0 10000 
+
+OTHER_FILES: 
+/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/farm/generateEvents/getJobNumber
+/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/farm/generateEvents/goGenerateBoth
+/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/farm/generateEvents/goElastGen
+/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/farm/generateEvents/goKeppelRad
+

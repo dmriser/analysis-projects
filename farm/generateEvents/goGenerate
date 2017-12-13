@@ -1,0 +1,28 @@
+#!/bin/tcsh -f
+
+
+set genFolder = /u/home/dmriser/mydoc/CLASSourceCode
+
+alias elast_gen    $genFolder/elasticRebuild/elast_gen
+alias keppel_rad   $genFolder/keppelRebuild/rad/keppel_rad
+alias keppel_norad $genFolder/keppelRebuild/norad/keppel_norad
+
+# setup output based on input from command
+set OUTDIR = $1
+set GEN    = $2 
+set PROJ   = $3 
+
+# create outdir if it doesn't exist 
+mkdir -p $OUTDIR/$PROJ
+
+set JOBNUMBER = `getJobNumber $OUTDIR $PROJ`
+mkdir -p $OUTDIR/$PROJ/JOB_$JOBNUMBER
+
+./goKeppelRad -N=100     -FILE=keppelRad.lund
+./goElastGen  -TIME=1000 -FILE=elastic.lund 
+
+# send output to folder 
+cp e1f.inp        $OUTDIR/$PROJ/JOB_$JOBNUMBER/
+cp keppel_rad.rz  $OUTDIR/$PROJ/JOB_$JOBNUMBER/
+
+

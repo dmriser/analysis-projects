@@ -1,0 +1,32 @@
+#!/bin/tcsh
+
+# This script is designed to "get a number" so that 
+# a bunch of jobs can be sent with MULTI_JOB command
+# and we still get sequential output. 
+
+set DIR  = $1 
+set PROJ = $2 
+
+mkdir -p $DIR/$PROJ/JOB_0
+
+set NEXIST = `ls $DIR/$PROJ/* | wc -l | awk '{print $1}'`
+@ MAX = $NEXIST + 100
+set JOB = 0
+
+# sleeping a random amount of time (max 100 seconds)
+# to prevent to use the same directory
+set x = `perl -e 'srand; print int(rand(100)+1)'`
+sleep $x
+
+while ($JOB < $MAX)
+
+      if (`filetest -e $DIR/$PROJ/JOB_$JOB` == 0) then
+	
+	echo $JOB
+
+	exit
+      endif
+
+      @ JOB += 1
+
+end

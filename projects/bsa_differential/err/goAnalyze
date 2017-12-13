@@ -1,0 +1,19 @@
+#!/bin/tcsh 
+
+set NFILES  = 900000000
+set OUTPUT  = $1
+set binName = $2
+set parfile = $3
+
+setenv h22libs /u/home/dmriser
+setenv ANALTOP /u/home/dmriser/Analysis_v2
+
+cp list.*.dat list.dat 
+chmod +x $binName
+
+# Asymmetry Script 
+./$binName -N=$NFILES -LIST=list.dat -PARS=$parfile -OUT=$OUTPUT
+
+
+
+ 

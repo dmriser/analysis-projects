@@ -1,0 +1,14 @@
+import os, glob
+
+env = Environment(ENV = {'PATH':os.environ['PATH']}, h22libs=os.environ['h22libs'])
+
+env.ParseConfig("root-config --glibs --cflags")
+env.Append(CCFLAGS = ['-g'])
+env.Append(CPPPATH = ['$h22libs/include/'], LIBPATH = ['$h22libs/lib/'],LIBS = ['h22','SimplePlot'])
+env.Append(CPPPATH = ['$ROOTSYS/include/'], LIBPATH = ['$ROOTSYS/lib/'],LIBS = ['TreePlayer'])
+
+env.Program('main',['main.cxx','LundGeneratedEventReader.cxx'])
+env.Program('comparePlots',['doComparePlots.cxx'])
+env.Program('makePlots',['doPlots.cxx'])
+
+

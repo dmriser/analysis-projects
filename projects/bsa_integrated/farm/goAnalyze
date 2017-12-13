@@ -1,0 +1,33 @@
+#!/bin/tcsh 
+
+set binName   = $1
+set configDir = $2
+set outDir    = $3
+
+setenv h22libs /u/home/dmriser
+setenv ANALTOP /u/home/dmriser/Analysis_v2
+
+set jobID = `ls list.* | cut -d'.' -f2 | awk '{print $1}'` 
+
+cp list.*.dat list.dat 
+chmod +x $binName
+
+cp $configDir/*.json . 
+set confNames = `ls *.json | cut -d'.' -f1`
+echo $confNames
+
+# Asymmetry Script 
+./$binName *.json 
+
+# the name of the output file much be the name of the config 
+foreach doneConfig ($confNames)
+    cp $doneConfig.root $outDir/$doneConfig/$jobID.root 
+    cp $doneConfig.json $outDir/$doneConfig/
+end
+
+echo "Finished."
+ls -lh
+
+
+
+ 

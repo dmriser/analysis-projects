@@ -1,0 +1,11 @@
+#!/bin/tcsh 
+
+set dir = $1
+cd $dir 
+
+set confs = `ls *.json`
+cd -
+
+foreach conf ($confs)    
+    echo $conf | cut -d'.' -f1
+end

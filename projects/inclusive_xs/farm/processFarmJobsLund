@@ -1,0 +1,18 @@
+#!/bin/tcsh 
+
+set searchKey = $1 
+set max = 500
+set current = 0
+
+set files = `ls $searchKey/*/*.lund`
+
+foreach file ($files)
+	echo "Working on $file"
+	./src/doRadiativeCorrection -N=20000 -LUND_RAD=$file -LUND_NORAD=$file -OUT=rad.$current.root > &/dev/null
+
+	if ($current > $max) then 
+	    break 
+	endif
+
+	@ current++
+end

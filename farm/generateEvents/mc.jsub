@@ -1,0 +1,17 @@
+JOBNAME:     MCDebug29
+TRACK:       simulation
+OS:          centos65
+PROJECT:     e1f
+TIME:        720
+DISK_SPACE:  1024 MB
+MEMORY:      2048 MB
+MULTI_JOBS:  2
+
+COMMAND:    chmod +x goSimulate; ./goSimulate /volatile/clas/clas12/dmriser/analysis/mcdata keppel_rad debug_jobs29
+
+OTHER_FILES: 
+/u/home/dmriser/mydoc/cooking_supplies/mc_tools/v2/goSimulate
+/u/home/dmriser/mydoc/cooking_supplies/mc_tools/v2/getJobNumber
+/u/home/dmriser/mydoc/cooking_supplies/mc_tools/ffread.in
+/u/home/dmriser/mydoc/cooking_supplies/mc_tools/recsis_e1f_MC.tcl 
+/u/home/dmriser/mydoc/CLASSourceCode/keppel_rad/e1f_keppel_rad.inp

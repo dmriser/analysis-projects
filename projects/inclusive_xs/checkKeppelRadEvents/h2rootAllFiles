@@ -1,0 +1,13 @@
+#!/bin/tcsh 
+
+set dir = $1 
+set files = `ls $dir/*/keppel_rad.rz`
+
+# for h2root 
+source /group/clas/builds/environment.csh 
+
+set currentFile = 0
+foreach file ($files)
+	h2root $file $currentFile.root 
+	@ currentFile++
+end

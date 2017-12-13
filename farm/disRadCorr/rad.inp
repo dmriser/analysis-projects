@@ -1,0 +1,10 @@
+.23 .14 .11 .1  ! Monte Carlo Integration Regions 
+2               ! 1-Electron 2-Electron+Photon (In gen.bos)
+.006 		! Target Thickness (Radiation Lengths)
+5.498		! Beam Energy 
+1.0 4.8		! Virtuality Limits 
+0.5 4.5		! Scattered Electron Energy Limits 
+.0008		! Photon Min. Cutoff Energy 
+2000 		! Beam Time (s)
+0.		! XS Scaling Factor 
+0.05		! XS Maximum

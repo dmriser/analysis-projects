@@ -1,0 +1,43 @@
+#!/bin/tcsh 
+
+# User Parameters 
+set numberOfJobs = 5
+set binDir       = "/u/home/dmriser/Analysis_v2/projects/asym/src/"
+set binName      = "fill"
+set sourceDir    = "/u/home/dmriser/Analysis_v2/projects/asym/err/"
+set outDir       = "/volatile/clas12/dmriser/farm_out/systematics/"
+set outName      = $1
+set runScript    = "goAnalyze"
+set fileList     = "/u/home/dmriser/Analysis_v2/lists/files.dat"
+set parFile      = $2 
+#set fileList     = "/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/projects/dis2/MonteCarlo.dat"
+
+# Create the output
+# dir if it doesnt exist
+mkdir -p $outDir/$outName
+cp $runScript $outDir/$outName/$runScript
+
+# Splits the master list into numberOfJobs
+# smaller lists to be used on the nodes.
+./buildFileList $numberOfJobs $fileList
+
+# Get our list of jobs 
+set allLists = `ls *.dat`
+
+# Send the jobs
+set currentList = 1
+foreach list ($allLists) 
+    ./buildJsub $allLists[$currentList] analysis.$currentList.jsub $binDir $binName $outDir/$outName $outName.$currentList.root $sourceDir $runScript $parFile
+    mv $list $outDir/$outName/$list
+    jsub analysis.$currentList.jsub 
+#    cat analysis.$currentList.jsub 
+    @ currentList++
+end
+
+# Clean 
+rm analysis.*.jsub 
+rm list.*.dat
+
+# Brag about it 
+echo " >> Done, output dir created. "
+ls $outDir/$outName

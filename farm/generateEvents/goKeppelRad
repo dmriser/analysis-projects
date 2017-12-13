@@ -1,0 +1,60 @@
+#!/bin/tcsh 
+
+# Sim Parameters 
+set TIME = 100
+set OUT = keppel_rad.lund 
+set BEAM = 5.498
+
+# Check arguments passed in. 
+foreach arg ($argv)
+    if (`echo $arg | grep -c "-"` > 0) then
+    set key = `echo $arg | cut -d'-' -f2 | cut -d'=' -f1`
+    set value = `echo $arg | cut -d'=' -f2`
+
+    if ($key == "TIME" || $key == "BEAMTIME") then 
+	set TIME = $value
+	echo " >>> Beamtime set to $TIME"
+    endif
+
+    if ($key == "OUT" || $key == "OUTPUT") then 
+	set OUT = $value
+	echo " >>> Output file set to $OUT"
+    endif
+
+    if ($key == "BEAM" || $key == "BEAMENERGY") then 
+	set BEAM = $value
+	echo " >>> Beam energy set to $BEAM"
+    endif
+
+    endif
+end
+
+cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_rad/keppel_rad . 
+
+# Write input file
+echo .25 .14 .11 .1  > rad.inp 
+echo 2               >> rad.inp
+echo .006            >> rad.inp
+echo $BEAM           >> rad.inp
+echo 1.0 4.8         >> rad.inp
+echo 0.5 4.5         >> rad.inp
+echo .05             >> rad.inp
+echo $TIME           >> rad.inp 
+echo 0.              >> rad.inp
+echo 0.1             >> rad.inp
+
+
+keppel_rad < rad.inp > &/dev/null
+mv rad.lund $OUT
+
+set nev = `tail -5 keppel_rad.out | grep "ntries" | awk '{print $5}'`
+
+rm rad.inp 
+rm keppel_rad 
+rm keppel_rad.out 
+rm keppel_rad.sum 
+
+echo " >>> Finished $nev events. "
+if (`ls *.lund | awk '{print $1}'` == 0) then
+    echo " >>> Generation failed, no output file detected... "
+endif

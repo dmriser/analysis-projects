@@ -1,0 +1,78 @@
+{
+    "system":{
+	"file_list":"list.dat",
+	"output":"./",
+	"analysis_home":"/volatile/clas12/dmriser/analysis/asymmetry",
+	"config_name":"pi_n",
+	"n_files":600,
+	"write_tree":0,
+	"parameter_file":"/u/home/dmriser/Analysis_v2/lists/data_tofmass.pars"
+    },
+
+    "fitter":{
+        "options":"ER",
+        "n_parameters":1,
+        "function":"[0]*sin((3.14159/180.0)*x)"
+    },
+
+    "cuts":{
+	"meson_id":{
+	    "value":211
+	},
+	"missing_mass":{
+	    "min":0.88,
+	    "max":0.98
+	},
+	"q2":{
+	    "min":1.00,
+	    "max":9.99
+	},
+	"w":{
+	    "min":2.00,
+	    "max":9.99
+	},
+        "meson_p":{
+            "min":0.00,
+            "max":5.70
+        },
+	"require_proton":{
+	    "value":0
+	},
+	"require_pi_minus":{
+	    "value":0
+	},
+	"require_pi_plus":{
+	    "value":0
+	}
+    }, 
+
+    "bins":{
+	"q2":[1.0, 2.0, 3.0, 4.0],
+	"phi":[-180,-150,-120,-90,-60,-30,0,
+	      30,60,90,120,150,180],
+	"pt": [
+            0.100000001490116,
+            0.300000011920929,
+            0.479583144187927,
+            0.640312433242798,
+            1.06301462650299
+        ],
+        "x": [
+            0.144999995827675,
+            0.234999999403954,
+            0.284999996423721,
+            0.324999988079071,
+            0.545000016689301
+        ],
+        "z": [
+	    0.3,
+            0.4,
+	    0.5,
+	    0.6,
+	    0.7,
+	    0.8,
+	    0.9,
+	    1.000
+        ]
+    }
+}

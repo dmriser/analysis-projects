@@ -1,0 +1,51 @@
+{
+    "system":{
+	"file_list":"/u/home/dmriser/Analysis_v2/lists/good_files.dat",
+	"output":"/volatile/clas12/dmriser/analysis/asymmetry/test/",
+	"analysis_home":"/volatile/clas12/dmriser/analysis/asymmetry/",
+	"config_name":"inclusivePion",
+	"n_files":2,
+	"parameter_file":"/u/home/dmriser/Analysis_v2/lists/data_tofmass.pars",
+	"write_tree":0
+    },
+
+    "fitter":{
+	"options":"ER",
+	"n_parameters":1,
+	"function":"[0]*sin((3.14159/180.0)*x)"
+    },
+
+    "cuts":{
+	"meson_id":{
+	    "value":211
+	},
+	"missing_mass":{
+	    "min":1.2,
+	    "max":9.9
+	},
+	"q2":{
+	    "min":1.0,
+	    "max":9.9
+	},
+	"w":{
+	    "min":2.0,
+	    "max":9.9
+	},
+	"meson_p":{
+	    "min":0.35, 
+	    "max":5.5
+	},
+	"require_proton":{
+	    "value":0
+	}
+    }, 
+
+    "bins":{
+	"x":[0.2, 0.3, 0.4, 0.5, 0.6, 0.7],
+	"q2":[1.0, 2.0, 3.0, 4.0],
+	"z":[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+	"pt":[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+	"phi":[-180,-160,-140,-120,-100,-80,-60,-40,-20,0,
+	      20,40,60,80,100,120,140,160,180]
+    }
+}

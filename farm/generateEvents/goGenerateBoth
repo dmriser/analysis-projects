@@ -1,0 +1,30 @@
+#!/bin/tcsh -f
+
+# setup output based on input from command
+set OUTDIR = $1
+set PROJ   = $2 
+set NEV    = $3 
+
+# create outdir if it doesn't exist 
+mkdir -p $OUTDIR/$PROJ
+
+set JOBNUMBER = `getJobNumber $OUTDIR $PROJ`
+mkdir -p $OUTDIR/$PROJ/JOB_$JOBNUMBER
+
+./goElastGen -N=$NEV -OUT=elastic.lund    >  $OUTDIR/$PROJ/JOB_$JOBNUMBER/log.dat
+
+# It would be preferable to run the job for the same 
+# beam time, but elast_gen doesn't operate on beam time
+# so we need to run it for some number of evenst and then
+# run keppel_rad for that beam time. 
+set TIME = `tail -5 $OUTDIR/$PROJ/JOB_$JOBNUMBER/log.dat | grep "Finished" | grep "seconds" | awk '{print $3}'`
+./goKeppelRad -TIME=$TIME -OUT=keppelRad.lund >> $OUTDIR/$PROJ/JOB_$JOBNUMBER/log.dat
+
+echo "Finished running both"               >> $OUTDIR/$PROJ/JOB_$JOBNUMBER/log.dat
+ls                                         >> $OUTDIR/$PROJ/JOB_$JOBNUMBER/log.dat
+
+# send output to folder 
+cp elast_gen.evt    $OUTDIR/$PROJ/JOB_$JOBNUMBER/
+cp keppel_rad.evt   $OUTDIR/$PROJ/JOB_$JOBNUMBER/
+
+

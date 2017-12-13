@@ -1,0 +1,71 @@
+#!/bin/tcsh 
+
+# Sim Parameters 
+set EVENTS = 10000
+set OUT = elast_gen.lund 
+set BEAM = 5.498
+set FRACTION = 0.9
+
+# Check arguments passed in. 
+foreach arg ($argv)
+    if (`echo $arg | grep -c "-"` > 0) then
+    set key = `echo $arg | cut -d'-' -f2 | cut -d'=' -f1`
+    set value = `echo $arg | cut -d'=' -f2`
+
+    if ($key == "EVENTS" || $key == "N") then 
+	set EVENTS = $value
+	echo " >>> Number of events set to $EVENTS"
+    endif
+
+    if ($key == "OUT" || $key == "OUTPUT") then 
+	set OUT = $value
+	echo " >>> Output file set to $OUT"
+    endif
+
+    if ($key == "FRACTION") then 
+	set FRACTION = $value
+	echo " >>> Elastic fraction set to $OUT"
+    endif
+
+    if ($key == "BEAM" || $key == "BEAMENERGY") then 
+	set BEAM = $value
+	echo " >>> Beam energy set to $BEAM"
+    endif
+
+    endif
+end
+
+cp /u/home/dmriser/mydoc/CLASSourceCode/elast_gen/elast_gen . 
+
+# Write input file
+echo $FRACTION          > elast.inp
+echo 0.001              >> elast.inp
+echo 2                  >> elast.inp
+echo 5 0.5              >> elast.inp 
+echo 0.15 -0.25 -24.72  >> elast.inp
+echo $BEAM              >> elast.inp
+echo 0.4                >> elast.inp 
+echo 18. 60.            >> elast.inp 
+echo 0                  >> elast.inp 
+echo $EVENTS            >> elast.inp 
+echo 0.08               >> elast.inp 
+echo 1,0                >> elast.inp 
+echo 3                  >> elast.inp 
+
+
+#elast_gen < elast.inp > &/dev/null
+elast_gen < elast.inp 
+mv clas12.lund $OUT
+
+set TIME = `tail -5 elast_gen.out | grep "seconds" | awk '{print $7}'`
+
+rm elast.inp 
+rm elast_gen
+rm *.out
+rm *.sum  
+rm *.rz 
+
+echo " >>> Finished $TIME seconds. "
+if (`ls *.lund | awk '{print $1}'` == 0) then
+    echo " >>> Generation failed, no output file detected... "
+endif

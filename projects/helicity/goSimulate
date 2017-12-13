@@ -1,0 +1,8 @@
+#!/bin/tcsh 
+
+setenv ANALTOP /u/home/dmriser/Analysis_v2/
+setenv h22libs /u/home/dmriser/
+
+# start doing the job 
+./correct_hel *.root 
+
