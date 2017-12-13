@@ -3,8 +3,8 @@ using namespace std;
 
 #include "TApplication.h"
 #include "h22Option.h"
-#include "findElectronIDParameters.h"
-#include "findElectronIDParameters.cxx"
+#include "common/findElectronIDParameters.h"
+#include "common/findElectronIDParameters.cxx"
 
 
 int main(int argc, char *argv[]){
@@ -18,9 +18,11 @@ int main(int argc, char *argv[]){
   opts.args["PARS"].name = "Output parameter file name"; 
   opts.set(argc, argv);
 
-  for (int ifile=0; ifile<opts.ifiles.size(); ifile++){ 
-    Analyzer.AddFile(opts.ifiles[ifile]); 
-  } 
+  for(std::string filename : opts.ifiles){
+    Analyzer.AddFile(filename);
+
+    std::cout << "Adding file " << filename << std::endl; 
+  }
         
   Analyzer.Init(); 
   Analyzer.Loop(opts.args["N"].arg); 

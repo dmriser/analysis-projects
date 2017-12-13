@@ -54,7 +54,7 @@ void Fill::Initialize(){
     deltaWAfter[s]  = new TH1I(Form("deltaWAfter%d",s),"",100,-0.4,0.4); 
   }
 
-  momCorr = new MomCorr_e1f("/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/momCorr/"); 
+  momCorr = new MomCorr_e1f("/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/momCorr/"); 
 
   cout << "[Fill::Init] Initialization done" << endl;
 }
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]){
 
   h22Options *options = new h22Options();
 
-  options->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/lists/data.pars";
+  options->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/lists/data.pars";
   options->args["PARS"].type = 1;
   options->args["PARS"].name = "Parameter file";
   options->set(argc, argv);

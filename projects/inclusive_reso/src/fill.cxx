@@ -147,7 +147,7 @@ int main(int argc, char *argv[]){
 
   // Setup Options
   h22Options opts;
-  opts.args["PARS"].args = "/u/home/dmriser/Analysis_v2/lists/parameters/mc/keppel_rad.pars";
+  opts.args["PARS"].args = "/u/home/dmriser/analysis-main/lists/parameters/mc/keppel_rad.pars";
   opts.args["PARS"].type = 1;
   opts.args["PARS"].name = "Parameter file";
 

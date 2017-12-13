@@ -118,11 +118,11 @@ int main(int argc, char *argv[]){
 
   h22Options *options = new h22Options();
 
-  options->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/lists/data.pars";
+  options->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/lists/data.pars";
   options->args["PARS"].type = 1;
   options->args["PARS"].name = "Parameter file";
 
-  options->args["LIST"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/projects/dis2/allGoodEvents.dat";
+  options->args["LIST"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/projects/dis2/allGoodEvents.dat";
   options->args["LIST"].type = 1;
   options->args["LIST"].name = "File list";
 
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]){
   pars->loadParameters(options->args["PARS"].args); 
 
   DInformation *info = new DInformation(); 
-  info->load("/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/lists/runsNew.info");
+  info->load("/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/lists/runsNew.info");
 
   if(info->has_information()){
 

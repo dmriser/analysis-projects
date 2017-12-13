@@ -75,15 +75,15 @@ int main(int argc, char * argv[]){
 
   // Start running the correct type
   if (runMode == "data"){
-    MomCorr_e1f *momentumCorrection = new MomCorr_e1f("/u/home/dmriser/Analysis_v2/momCorr/");
-//    MomCorr_e1f *momentumCorrection = new MomCorr_e1f("/Users/dmriser/Work/Analysis_v2/momCorr/");
+    MomCorr_e1f *momentumCorrection = new MomCorr_e1f("/u/home/dmriser/analysis-main/momCorr/");
+//    MomCorr_e1f *momentumCorrection = new MomCorr_e1f("/Users/dmriser/Work/analysis-main/momCorr/");
     DataLoader loader(eventSelector, momentumCorrection, pars, outputFilename, "RECREATE");
     for (int ifile = 0; ifile < files.size(); ifile++) { loader.AddFile(files[ifile]); }
     loader.Execute();
 
     DInformation *runInformation = new DInformation();
-    runInformation->load("/u/home/dmriser/Analysis_v2/lists/runs.info");
-//    runInformation->load("/Users/dmriser/Work/Analysis_v2/lists/runs.info");
+    runInformation->load("/u/home/dmriser/analysis-main/lists/runs.info");
+//    runInformation->load("/Users/dmriser/Work/analysis-main/lists/runs.info");
 
     FaradayCupAppender chargeAppender(runInformation);
     chargeAppender.AddFiles(files);
@@ -127,7 +127,7 @@ void configureCommandLineOptions(h22Options * theseOpts){
   theseOpts->args["LIST"].type = 1;
   theseOpts->args["LIST"].name = "Process list of files";
   
-  theseOpts->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/lists/pars.dat";
+  theseOpts->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/lists/pars.dat";
   theseOpts->args["PARS"].type = 1;
   theseOpts->args["PARS"].name = "Parameter File";
   

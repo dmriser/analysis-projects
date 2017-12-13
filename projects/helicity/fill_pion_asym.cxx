@@ -279,7 +279,7 @@ int main(int argc, char * argv[]){
   
   // Setup Options
   h22Options opts;
-  opts.args["PARS"].args = "/u/home/dmriser/Analysis_v2/lists/data.pars";
+  opts.args["PARS"].args = "/u/home/dmriser/analysis-main/lists/data.pars";
   opts.args["PARS"].type = 1;
   opts.args["PARS"].name = "Parameter file";
   opts.args["LIST"].args = "UNSET";

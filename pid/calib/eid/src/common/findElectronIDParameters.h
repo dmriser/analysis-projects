@@ -6,10 +6,6 @@
 #include <iostream>
 
  // Put your includes here 
-#include "DBins.h" 
-#include "DCut.h" 
-#include "DEvent.h" 
-#include "DSelection.h" 
 #include "h22Event.h" 
 #include "h22Reader.h" 
 #include "Parameters.h"

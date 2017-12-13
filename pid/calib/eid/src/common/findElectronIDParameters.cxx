@@ -353,11 +353,11 @@ void findElectronIDParameters::WriteHardCodedParameters(){
   eidParameters.addParameterSet(ecEdepMin); 
 }
 
-void findElectronIDParameters::SaveParameters(string outputFilename){
+void findElectronIDParameters::SaveParameters(std::string outputFilename){
   eidParameters.saveParameters(outputFilename); 
 }
  
-void findElectronIDParameters::SaveHistograms(string outputFilename){
+void findElectronIDParameters::SaveHistograms(std::string outputFilename){
 
   TFile *outputFile = new TFile(outputFilename.c_str(), "recreate"); 
 

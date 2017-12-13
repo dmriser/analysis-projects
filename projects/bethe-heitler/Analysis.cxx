@@ -102,11 +102,11 @@ int main(int argc, char *argv[]){
 
   h22Options *options = new h22Options();
 
-  options->args["PARS"].args = "/u/home/dmriser/Analysis_v2/lists/parameters/data/data.pars";
+  options->args["PARS"].args = "/u/home/dmriser/analysis-main/lists/parameters/data/data.pars";
   options->args["PARS"].type = 1;
   options->args["PARS"].name = "Parameter file";
 
-  options->args["LIST"].args = "/u/home/dmriser/Analysis_v2/projects/dis2/allGoodEvents.dat";
+  options->args["LIST"].args = "/u/home/dmriser/analysis-main/projects/dis2/allGoodEvents.dat";
   options->args["LIST"].type = 1;
   options->args["LIST"].name = "File list";
 

@@ -181,7 +181,7 @@ void MyAnalysis::Save(){
 int main(int argc, char *argv[]){
 
   h22Options *options = new h22Options();
-  options->args["PARS"].args = "/u/home/dmriser/Analysis_v2/lists/dataLoose.pars";
+  options->args["PARS"].args = "/u/home/dmriser/analysis-main/lists/dataLoose.pars";
   options->args["PARS"].type = 1;
   options->args["PARS"].name = "Parameter file";
 

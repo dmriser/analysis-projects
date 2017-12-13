@@ -14,9 +14,9 @@ int main(int argc, char *argv[]){
   h22Options opts; 
 
   Parameters pars, parsloose, parstight; 
-  pars.loadParameters("/u/home/dmriser/Analysis_v2/lists/clasdis.pars"); 
-  parsloose.loadParameters("/u/home/dmriser/Analysis_v2/lists/clasdis_loose.pars"); 
-  parstight.loadParameters("/u/home/dmriser/Analysis_v2/lists/clasdis_tight.pars"); 
+  pars.loadParameters("/u/home/dmriser/analysis-main/lists/clasdis.pars"); 
+  parsloose.loadParameters("/u/home/dmriser/analysis-main/lists/clasdis_loose.pars"); 
+  parstight.loadParameters("/u/home/dmriser/analysis-main/lists/clasdis_tight.pars"); 
   
   opts.set(argc, argv);
 

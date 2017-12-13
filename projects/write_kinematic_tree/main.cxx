@@ -14,9 +14,9 @@ int main(int argc, char *argv[]){
   h22Options opts; 
 
   Parameters pars, parsloose, parstight; 
-  pars.loadParameters("/u/home/dmriser/Analysis_v2/lists/data_tofmass.pars"); 
-  parsloose.loadParameters("/u/home/dmriser/Analysis_v2/lists/dataLoose.pars"); 
-  parstight.loadParameters("/u/home/dmriser/Analysis_v2/lists/dataTight.pars"); 
+  pars.loadParameters("/u/home/dmriser/analysis-main/lists/data_tofmass.pars"); 
+  parsloose.loadParameters("/u/home/dmriser/analysis-main/lists/dataLoose.pars"); 
+  parstight.loadParameters("/u/home/dmriser/analysis-main/lists/dataTight.pars"); 
   
   opts.set(argc, argv);
 

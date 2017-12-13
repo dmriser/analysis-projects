@@ -131,7 +131,7 @@ int main(int argc, char *argv[]){
     j["bins"]["z"]  = binnedAxes[axis::z] .limits; 
     j["bins"]["pt"] = binnedAxes[axis::pt].limits; 
 
-    std::ofstream o(Form("/u/home/dmriser/Analysis_v2/projects/asym2/binning/%s.json", c.name.c_str()));
+    std::ofstream o(Form("/u/home/dmriser/analysis-main/projects/asym2/binning/%s.json", c.name.c_str()));
     o << std::setw(4) << j << std::endl;
     o.close();
 

@@ -127,7 +127,7 @@ void configureCommandLineOptions(h22Options * theseOpts){
   theseOpts->args["LIST"].type = 1;
   theseOpts->args["LIST"].name = "Process list of files";
   
-  theseOpts->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/lists/keppelRad.pars";
+  theseOpts->args["PARS"].args = "/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/lists/keppelRad.pars";
   theseOpts->args["PARS"].type = 1;
   theseOpts->args["PARS"].name = "Parameter file";
   
