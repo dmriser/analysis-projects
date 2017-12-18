@@ -54,7 +54,7 @@
 
   TLatex *latex = new TLatex();
   latex->SetNDC();
-  latex->SetTextSize(0.05);
+  latex->SetTextSize(0.04);
   //  latex->SetTextFont(42); 
 
   TCanvas *can = new TCanvas("can", "", 600, 1800);

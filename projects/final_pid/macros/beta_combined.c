@@ -54,7 +54,7 @@
 
   TLatex *latex = new TLatex();
   latex->SetNDC();
-  latex->SetTextSize(0.05);
+  latex->SetTextSize(0.04);
   latex->SetTextFont(42); 
 
   TCanvas *can = new TCanvas("can", "", 1200, 1200);
@@ -65,7 +65,7 @@
   up[0][1]->Draw("same"); 
   low[0][1]->Draw("same"); 
 
-  latex->DrawLatex(0.45, 0.95, "#pi^{+}"); 
+  latex->DrawLatex(0.75, 0.90, "#pi^{+}"); 
   latex->DrawLatex(0.45, 0.05, "p (GeV/c)"); 
   latex->SetTextAngle(90.0); 
   latex->DrawLatex(0.05, 0.45, "#beta"); 

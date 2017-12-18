@@ -59,6 +59,7 @@ public:
     tupleWriter.addFloat("theta_ele"); 
     tupleWriter.addFloat("theta_pip");
     tupleWriter.addFloat("dvz");
+    tupleWriter.addFloat("dt");
     tupleWriter.addFloat("dist_ecsf");
     tupleWriter.addFloat("dist_ec_edep");
     tupleWriter.addFloat("dist_vz");
@@ -66,6 +67,9 @@ public:
   }
 
   ~Analysis(){
+    filter->electronSelector->PrintSummary(); 
+    filter->positivePionSelector->PrintSummary(); 
+    filter->positiveMesonCandidateSelector->PrintSummary(); 
   }
 
   void Loop(){
@@ -112,7 +116,7 @@ public:
 	  if ( sqrt(ev.mm2) > 0.8 && sqrt(ev.mm2) < 1.08 
 	       && ev.w > 2.0 && ev.qq > 1.0) {
 
-	    tupleWriter.setInt("helicity",       event.corr_hel);
+ 	    tupleWriter.setInt("helicity",       event.corr_hel);
 	    tupleWriter.setFloat("missing_mass", sqrt(ev.mm2));
 	    tupleWriter.setFloat("x",            ev.x);
 	    tupleWriter.setFloat("q2",           ev.qq);
@@ -124,6 +128,7 @@ public:
 	    tupleWriter.setFloat("phi_h",        ev.phiHadron);
 	    tupleWriter.setFloat("p_ele",        electron.P()); 
 	    tupleWriter.setFloat("p_pip",        pip.P()); 
+	    tupleWriter.setFloat("dt", event.sc_t[electronIndex]-event.ec_t[electronIndex]);
 	    tupleWriter.setFloat("theta_ele",    to_degrees*electron.Theta()); 
 	    tupleWriter.setFloat("theta_pip",    to_degrees*pip.Theta()); 
 	    tupleWriter.setFloat("phi_ele",      to_degrees*electron.Phi()); 

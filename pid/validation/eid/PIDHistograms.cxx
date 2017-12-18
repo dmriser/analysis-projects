@@ -260,8 +260,8 @@ int main (int argc, char * argv[]){
   Parameters *pars = new Parameters(); 
   pars->loadParameters(opts.args["PARS"].args);
   
-  ParticleFilter filter(pars);
-  filter.set_info(reader.GSIM, reader.GetRunNumber()); 
+  ParticleFilter *filter = new ParticleFilter(pars);
+  filter->set_info(reader.GSIM, reader.GetRunNumber()); 
   //  filter.getCut("Track Quality Cut")->disable();
 
   PIDHistograms histos;
@@ -277,7 +277,7 @@ int main (int argc, char * argv[]){
 	  if (event.q[ipart] < 0){
 
 	    //  holds the result of all cuts, intensive 
-	    map<string, bool> eID_Status = filter.eid_map(event, ipart);
+	    std::map<std::string, bool> eID_Status = filter->eid_map(event, ipart);
 	    
 	      histos.Fill(event, ipart, 0);
 	      if(eID_Status["Z_VERTEX"]){    histos.Fill(event, ipart, 2); }
@@ -401,7 +401,7 @@ int main (int argc, char * argv[]){
       
 
       // look for electron in event
-      int e_index = filter.getByPID(event, 11);
+      int e_index = filter->getByPID(event, 11);
       if (e_index > -123){ histos.Fill(event, e_index, 1); }
 
       if (iEvent%10000 == 0) {

@@ -1,10 +1,10 @@
 {
 
-  TFile * file = TFile::Open("/volatile/clas12/dmriser/farm_out/eid_pass1/eid.root");
-  //  TFile * file = TFile::Open("PID.root");
+  //  TFile * file = TFile::Open("/volatile/clas12/dmriser/farm_out/eid_pass1/eid.root");
+  TFile * file = TFile::Open("PID.root");
   TCanvas * c1 = new TCanvas("c1", "", 800, 800);
 
-  std::string imagePath("/volatile/clas12/dmriser/plots/pid/eid"); 
+  std::string imagePath("/volatile/clas12/dmriser/plots/pid/eid/e16"); 
 
   TF1 *ccCutLine = new TF1("ccCut","[0] - [1]*sqrt(1-x^2/[2])",-30,30); 
   ccCutLine->SetParameter(0, 46.0); 
@@ -67,7 +67,7 @@
   string printer = "";
                         
   for (int itype = 0; itype < NTYPE; itype++)
-    for(int isect = 0; isect < 1; isect++){
+    for(int isect = 0; isect < 7; isect++){
 	// 1d                                                                                                                                                                                                   
 	h1_nphe[itype][isect]          = (TH1D*) file->Get(Form("h1_nphe_%s_%s",type[itype].c_str(),sect[isect].c_str()));
 	h1_nphe[itype][isect]->SetFillColorAlpha(85, 0.4);
