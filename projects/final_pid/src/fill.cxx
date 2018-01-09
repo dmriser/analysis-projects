@@ -63,6 +63,8 @@ public:
     // particle traces without applying cuts.  
     mesonHistos[211][cutTypes::physicsEnhanced]  = new MesonHistograms("211_physics_enhanced",   211); 
     mesonHistos[321][cutTypes::physicsEnhanced]  = new MesonHistograms("321_physics_enhanced",   321);     
+    mesonHistos[-211][cutTypes::physicsEnhanced]  = new MesonHistograms("-211_physics_enhanced",  -211); 
+    mesonHistos[-321][cutTypes::physicsEnhanced]  = new MesonHistograms("-321_physics_enhanced",  -321);     
     mesonHistos[2212][cutTypes::physicsEnhanced]  = new MesonHistograms("2212_physics_enhanced",   2212);     
 
     // this will be the same for each particle type let's just save once
@@ -119,6 +121,13 @@ public:
 	for(int ipart=0; ipart<event.gpart; ipart++){
 	  if (event.dc_sect[ipart]>0){
 	    
+	    if(event.id[ipart] == -211){
+	      mesonHistos[-211][cutTypes::physicsEnhanced]->Fill(event, ipart); 
+	    } else if (event.id[ipart] == -321 && event.HasParticle(321)){
+	      mesonHistos[-321][cutTypes::physicsEnhanced]->Fill(event, ipart); 
+	    }
+	    
+
 	    if (event.q[ipart] > 0){
 	      mesonHistos[211][cutTypes::none]->Fill(event, ipart); 
 
@@ -183,6 +192,15 @@ public:
 	  for(int index : indices.second){
 	    float tofmass = pow(event.p[index], 2) * (1-pow(event.corr_b[index], 2))/pow(event.corr_b[index], 2);
 
+	    /* 
+	       This could be misleading.  The output file says "all cuts", but this 
+	       is simply a time of flight mass cut and doesn't reflect the result
+	       of the full particle identification.  
+	       
+	       Those results can be produced by 
+	       running the codes found in /analysis-projects/final_pid/src/test.cxx.
+	    */
+
 	    if ( fabs(tofmass - pid_to_mass(indices.first)) < 0.125)
 	      mesonHistos[indices.first][cutTypes::all]->Fill(event, index); 
 	  }
@@ -229,6 +247,8 @@ public:
 
     mesonHistos[211][cutTypes::physicsEnhanced] ->Save(out); 
     mesonHistos[321][cutTypes::physicsEnhanced] ->Save(out); 
+    mesonHistos[-211][cutTypes::physicsEnhanced] ->Save(out); 
+    mesonHistos[-321][cutTypes::physicsEnhanced] ->Save(out); 
     mesonHistos[2212][cutTypes::physicsEnhanced] ->Save(out); 
 
     mesonHistos[211][cutTypes::dvz]->Save(out); 

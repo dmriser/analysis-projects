@@ -54,10 +54,14 @@ public:
 
     mesonHistos[211][cutTypes::physicsEnhanced]  = new MesonHistograms("211_physics_enhanced",  211);  
     mesonHistos[321][cutTypes::physicsEnhanced]  = new MesonHistograms("321_physics_enhanced",  321);  
+    mesonHistos[-211][cutTypes::physicsEnhanced]  = new MesonHistograms("-211_physics_enhanced",  -211);  
+    mesonHistos[-321][cutTypes::physicsEnhanced]  = new MesonHistograms("-321_physics_enhanced",  -321);  
     mesonHistos[2212][cutTypes::physicsEnhanced] = new MesonHistograms("2212_physics_enhanced", 2212);  
 
     mesonHistos[211][cutTypes::physicsEnhanced] ->Load(filename); 
     mesonHistos[321][cutTypes::physicsEnhanced] ->Load(filename); 
+    mesonHistos[-211][cutTypes::physicsEnhanced] ->Load(filename); 
+    mesonHistos[-321][cutTypes::physicsEnhanced] ->Load(filename); 
     mesonHistos[2212][cutTypes::physicsEnhanced]->Load(filename); 
   }
 
@@ -95,15 +99,25 @@ public:
       
       mesonHistos[211][cutTypes::physicsEnhanced] ->Save(out);
       mesonHistos[321][cutTypes::physicsEnhanced] ->Save(out);
+      mesonHistos[-211][cutTypes::physicsEnhanced] ->Save(out);
+      mesonHistos[-321][cutTypes::physicsEnhanced] ->Save(out);
       mesonHistos[2212][cutTypes::physicsEnhanced] ->Save(out);
 
       for(int i=0; i<mesonMus[211].size(); i++){
 	mesonMus[211][i].Write();
 	mesonSigmas[211][i].Write();
       }
+      for(int i=0; i<mesonMus[-211].size(); i++){
+	mesonMus[-211][i].Write();
+	mesonSigmas[-211][i].Write();
+      }
       for(int i=0; i<mesonMus[321].size(); i++){
 	mesonMus[321][i].Write();
 	mesonSigmas[321][i].Write();
+      }
+      for(int i=0; i<mesonMus[-321].size(); i++){
+	mesonMus[-321][i].Write();
+	mesonSigmas[-321][i].Write();
       }
       for(int i=0; i<mesonMus[2212].size(); i++){
 	mesonMus[2212][i].Write();
@@ -126,6 +140,27 @@ public:
 	}
       }
       for(std::vector<TF1> s : fits[321]){
+	for(TF1 f : s){
+	  f.Write(); 
+	}
+      }
+
+      for(std::vector<TH1D> s : slices[-211]){
+	for(TH1D h : s){
+	  h.Write(); 
+	}
+      }
+      for(std::vector<TF1> s : fits[-211]){
+	for(TF1 f : s){
+	  f.Write(); 
+	}
+      }
+      for(std::vector<TH1D> s : slices[-321]){
+	for(TH1D h : s){
+	  h.Write(); 
+	}
+      }
+      for(std::vector<TF1> s : fits[-321]){
 	for(TF1 f : s){
 	  f.Write(); 
 	}
@@ -178,6 +213,44 @@ public:
       fParameterSets[321]["KP_DBETA_MU_C"].setName("KP_DBETA_MU_C"); 
       for(TF1 f : mesonMus[321]){ 
 	fParameterSets[321]["KP_DBETA_MU_C"].addValueAndError(f.GetParameter(0), 0.0); 
+      }
+
+
+      fParameterSets[-211]["PIM_DBETA_MU_A"] = ParameterSet(); 
+      fParameterSets[-211]["PIM_DBETA_MU_A"].setName("PIM_DBETA_MU_A"); 
+      for(TF1 f : mesonMus[-211]){ 
+	fParameterSets[-211]["PIM_DBETA_MU_A"].addValueAndError(f.GetParameter(2), 0.0); 
+      }
+
+      fParameterSets[-211]["PIM_DBETA_MU_B"] = ParameterSet(); 
+      fParameterSets[-211]["PIM_DBETA_MU_B"].setName("PIM_DBETA_MU_B"); 
+      for(TF1 f : mesonMus[-211]){ 
+	fParameterSets[211]["PIM_DBETA_MU_B"].addValueAndError(f.GetParameter(1), 0.0); 
+      }
+
+      fParameterSets[-211]["PIM_DBETA_MU_C"] = ParameterSet(); 
+      fParameterSets[-211]["PIM_DBETA_MU_C"].setName("PIM_DBETA_MU_C"); 
+      for(TF1 f : mesonMus[-211]){ 
+	fParameterSets[-211]["PIM_DBETA_MU_C"].addValueAndError(f.GetParameter(0), 0.0); 
+      }
+
+      // --------------------------------------------------------------------------------
+      fParameterSets[-321]["KM_DBETA_MU_A"] = ParameterSet(); 
+      fParameterSets[-321]["KM_DBETA_MU_A"].setName("KM_DBETA_MU_A"); 
+      for(TF1 f : mesonMus[-321]){ 
+	fParameterSets[321]["KM_DBETA_MU_A"].addValueAndError(f.GetParameter(2), 0.0); 
+      }
+
+      fParameterSets[-321]["KM_DBETA_MU_B"] = ParameterSet(); 
+      fParameterSets[-321]["KM_DBETA_MU_B"].setName("KM_DBETA_MU_B"); 
+      for(TF1 f : mesonMus[-321]){ 
+	fParameterSets[321]["KM_DBETA_MU_B"].addValueAndError(f.GetParameter(1), 0.0); 
+      }
+
+      fParameterSets[-321]["KM_DBETA_MU_C"] = ParameterSet(); 
+      fParameterSets[-321]["KM_DBETA_MU_C"].setName("KM_DBETA_MU_C"); 
+      for(TF1 f : mesonMus[-321]){ 
+	fParameterSets[-321]["KM_DBETA_MU_C"].addValueAndError(f.GetParameter(0), 0.0); 
       }
 
       // --------------------------------------------------------------------------------
@@ -310,6 +383,8 @@ int main(int argc, char *argv[]){
       // run analysis loop
       analysis.Calibrate( 211  ); 
       analysis.Calibrate( 321  ); 
+      analysis.Calibrate(-211  ); 
+      analysis.Calibrate(-321  ); 
       analysis.Calibrate( 2212 ); 
 
 
