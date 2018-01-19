@@ -23,8 +23,6 @@ using namespace std;
 
 int PrintUsage();
 void configureCommandLineOptions(h22Options * theseOpts); 
-vector<string> loadFilesFromList(string fileList, int numFiles);
-vector<string> loadFilesFromCommandLine(h22Options * theseOpts, int numFiles);
 
 int main(int argc, char * argv[]){
 
@@ -88,7 +86,7 @@ int main(int argc, char * argv[]){
 
   // Check for no files, then setup the list of files to process correctly. 
   if (numberOfFilesToProcess == 0){ cout << " No files/list detected. " << endl; return 0; }
-  vector<string> files;
+  std::vector<std::string> files;
 
   if (fileList != "UNSET") {
     files = loadFilesFromList(fileList, numberOfFilesToProcess);
@@ -98,9 +96,12 @@ int main(int argc, char * argv[]){
 
   // Start running the correct type
   if (runMode == "data"){
-    MomCorr_e1f * momentumCorrection = new MomCorr_e1f("/u/home/dmriser/mydoc/analysis/root_scripts/analysis-main/momCorr/"); 
+    MomCorr_e1f * momentumCorrection = new MomCorr_e1f("/u/home/dmriser/analysis-main/momCorr/"); 
     DataLoader loader(eventSelector, momentumCorrection, pars, outputFilename, "RECREATE");
-    for (int ifile = 0; ifile < files.size(); ifile++) { loader.AddFile(files[ifile]); }
+    for (std::string currentFile : files) { 
+      loader.AddFile(currentFile); 
+      std::cout << "Loader adding file " << currentFile << std::endl; 
+    }
     loader.Execute();
 
     DInformation *runInformation = new DInformation();
@@ -186,35 +187,6 @@ void configureCommandLineOptions(h22Options * theseOpts){
   theseOpts->args["PARS"].type = 1;
   theseOpts->args["PARS"].name = "Particle ID parameters file";
   
-}
-
-vector<string> loadFilesFromList(string fileList, int numFiles){
-  vector<string> theseFiles; 
-
-  ifstream inputFile; 
-  inputFile.open(fileList.c_str());
-
-  int ifile = 0; string line;
-  while (getline(inputFile, line) && ifile < numFiles){
-    theseFiles.push_back(line);
-    ifile++;
-  }
-  
-  inputFile.close();
-  return theseFiles; 
-}
-
-vector<string> loadFilesFromCommandLine(h22Options * theseOpts, int numFiles){
-  vector<string> theseFiles; 
-
-  for(int ifile = 0; ifile < theseOpts->ifiles.size(); ifile++){
-    theseFiles.push_back(theseOpts->ifiles[ifile]);
-    ifile++;
-
-    if (ifile == numFiles){ break; }
-  }
-
-  return theseFiles; 
 }
 
 int PrintUsage(){

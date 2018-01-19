@@ -27,15 +27,34 @@ class BaseDISHistograms{
   const static int numberOfQQBins = 200; 
   const static int numberOfWBins  = 200;
 
-  // c++ 11 Standrd 
-  //  static constexpr double xMin  = 0.1;  static constexpr double xMax  = 0.6; 
-  //  static constexpr double qqMin = 1.7;  static constexpr double qqMax = 4.2;
-  //  static constexpr double wMin  = 1.1;  static constexpr double wMax  = 2.1; 
+  /* 
 
+     ------------------------------------------------
+     The values used for the inclusive cross section 
+     successful run are copied here for safe keeping.
+     ------------------------------------------------
+
+     static constexpr double xMin  = 0.1;  static constexpr double xMax  = 0.6; 
+     static constexpr double qqMin = 1.7;  static constexpr double qqMax = 4.2;
+     static constexpr double wMin  = 1.1;  static constexpr double wMax  = 2.1; 
+     
+     const static double xMin  = 0.1;  const static double xMax  = 0.6; 
+     const static double qqMin = 1.7;  const static double qqMax = 4.2;
+     const static double wMin  = 1.1;  const static double wMax  = 2.1; 
+
+   */
+
+  // c++ 11 Standrd 
+#if __cplusplus >= 201103L
+  static constexpr double xMin  = 0.1;  static constexpr double xMax  = 0.6; 
+  static constexpr double qqMin = 1.7;  static constexpr double qqMax = 4.2;
+  static constexpr double wMin  = 1.1;  static constexpr double wMax  = 3.0; 
+#else
   const static double xMin  = 0.1;  const static double xMax  = 0.6; 
   const static double qqMin = 1.7;  const static double qqMax = 4.2;
-  const static double wMin  = 1.1;  const static double wMax  = 2.1; 
-  
+  const static double wMin  = 1.1;  const static double wMax  = 3.0; 
+#endif
+
   string baseName; 
   
   TFile * inputFile; 

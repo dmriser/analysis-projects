@@ -23,7 +23,7 @@ using namespace std;
 // cern root 
 #include "TLorentzVector.h"
 
-class DataLoader : public HistogramLoader{
+class DataLoader : public HistogramLoader {
  public:
   DataLoader(PhysicsEventSelector *eventCriteria, MomCorr_e1f *momCorr, Parameters *pars, std::string outputFile, std::string saveOpts);
   ~DataLoader();

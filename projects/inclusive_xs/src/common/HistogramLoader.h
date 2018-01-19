@@ -60,8 +60,10 @@ void HistogramLoader::Initialize(){
 }
 
 void HistogramLoader::Loop(){
-  if (GSIM == -1) { Init(); }
+  //  if (GSIM == -1) { Init(); }
   
+  Init(); 
+
   long int numberOfEntries = fchain->GetEntries();
   for (long int iEntry = 0; iEntry < numberOfEntries; iEntry++) {
     if (iEntry%1000 == 0){ cout << "\r done " << iEntry << " events of " << numberOfEntries << flush; } 

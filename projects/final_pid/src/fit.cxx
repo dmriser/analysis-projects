@@ -75,6 +75,12 @@ public:
       sliceFitter->SetNumberSlices(40); 
       sliceFitter->SetXMin(0.2);
       sliceFitter->SetXMax(3.25);
+    } else if (pid == -321){
+      sliceFitter->SetUpperTolerance(1.15);
+      sliceFitter->SetLowerTolerance(0.85); 
+      sliceFitter->SetNumberSlices(40); 
+      sliceFitter->SetXMin(0.2);
+      sliceFitter->SetXMax(2.88);
     } else {
       sliceFitter->SetUpperTolerance(1.15);
       sliceFitter->SetLowerTolerance(0.85); 
@@ -176,8 +182,6 @@ public:
 	}
       }
 
-      out->Close();
-
       fParameterSets[211]["PIP_DBETA_MU_A"] = ParameterSet(); 
       fParameterSets[211]["PIP_DBETA_MU_A"].setName("PIP_DBETA_MU_A"); 
       for(TF1 f : mesonMus[211]){ 
@@ -215,41 +219,29 @@ public:
 	fParameterSets[321]["KP_DBETA_MU_C"].addValueAndError(f.GetParameter(0), 0.0); 
       }
 
-
+      // --------------------------------------------------------------------------------
       fParameterSets[-211]["PIM_DBETA_MU_A"] = ParameterSet(); 
       fParameterSets[-211]["PIM_DBETA_MU_A"].setName("PIM_DBETA_MU_A"); 
-      for(TF1 f : mesonMus[-211]){ 
-	fParameterSets[-211]["PIM_DBETA_MU_A"].addValueAndError(f.GetParameter(2), 0.0); 
-      }
-
       fParameterSets[-211]["PIM_DBETA_MU_B"] = ParameterSet(); 
       fParameterSets[-211]["PIM_DBETA_MU_B"].setName("PIM_DBETA_MU_B"); 
-      for(TF1 f : mesonMus[-211]){ 
-	fParameterSets[211]["PIM_DBETA_MU_B"].addValueAndError(f.GetParameter(1), 0.0); 
-      }
-
       fParameterSets[-211]["PIM_DBETA_MU_C"] = ParameterSet(); 
       fParameterSets[-211]["PIM_DBETA_MU_C"].setName("PIM_DBETA_MU_C"); 
       for(TF1 f : mesonMus[-211]){ 
+	fParameterSets[-211]["PIM_DBETA_MU_A"].addValueAndError(f.GetParameter(2), 0.0); 
+	fParameterSets[-211]["PIM_DBETA_MU_B"].addValueAndError(f.GetParameter(1), 0.0); 
 	fParameterSets[-211]["PIM_DBETA_MU_C"].addValueAndError(f.GetParameter(0), 0.0); 
       }
 
       // --------------------------------------------------------------------------------
       fParameterSets[-321]["KM_DBETA_MU_A"] = ParameterSet(); 
       fParameterSets[-321]["KM_DBETA_MU_A"].setName("KM_DBETA_MU_A"); 
-      for(TF1 f : mesonMus[-321]){ 
-	fParameterSets[321]["KM_DBETA_MU_A"].addValueAndError(f.GetParameter(2), 0.0); 
-      }
-
       fParameterSets[-321]["KM_DBETA_MU_B"] = ParameterSet(); 
       fParameterSets[-321]["KM_DBETA_MU_B"].setName("KM_DBETA_MU_B"); 
-      for(TF1 f : mesonMus[-321]){ 
-	fParameterSets[321]["KM_DBETA_MU_B"].addValueAndError(f.GetParameter(1), 0.0); 
-      }
-
       fParameterSets[-321]["KM_DBETA_MU_C"] = ParameterSet(); 
       fParameterSets[-321]["KM_DBETA_MU_C"].setName("KM_DBETA_MU_C"); 
       for(TF1 f : mesonMus[-321]){ 
+	fParameterSets[-321]["KM_DBETA_MU_A"].addValueAndError(f.GetParameter(2), 0.0); 
+	fParameterSets[-321]["KM_DBETA_MU_B"].addValueAndError(f.GetParameter(1), 0.0); 
 	fParameterSets[-321]["KM_DBETA_MU_C"].addValueAndError(f.GetParameter(0), 0.0); 
       }
 
@@ -296,6 +288,26 @@ public:
       }
 
       // --------------------------------------------------------------------------------
+
+      fParameterSets[-211]["PIM_DBETA_SIGMA_A"] = ParameterSet(); 
+      fParameterSets[-211]["PIM_DBETA_SIGMA_A"].setName("PIM_DBETA_SIGMA_A"); 
+      for(TF1 f : mesonSigmas[-211]){ 
+	fParameterSets[-211]["PIM_DBETA_SIGMA_A"].addValueAndError(f.GetParameter(2), 0.0); 
+      }
+
+      fParameterSets[-211]["PIM_DBETA_SIGMA_B"] = ParameterSet(); 
+      fParameterSets[-211]["PIM_DBETA_SIGMA_B"].setName("PIM_DBETA_SIGMA_B"); 
+      for(TF1 f : mesonSigmas[-211]){ 
+	fParameterSets[-211]["PIM_DBETA_SIGMA_B"].addValueAndError(f.GetParameter(1), 0.0); 
+      }
+
+      fParameterSets[-211]["PIM_DBETA_SIGMA_C"] = ParameterSet(); 
+      fParameterSets[-211]["PIM_DBETA_SIGMA_C"].setName("PIM_DBETA_SIGMA_C"); 
+      for(TF1 f : mesonSigmas[-211]){ 
+	fParameterSets[-211]["PIM_DBETA_SIGMA_C"].addValueAndError(f.GetParameter(0), 0.0); 
+      }
+
+      // --------------------------------------------------------------------------------
       fParameterSets[321]["KP_DBETA_SIGMA_A"] = ParameterSet(); 
       fParameterSets[321]["KP_DBETA_SIGMA_A"].setName("KP_DBETA_SIGMA_A"); 
       for(TF1 f : mesonSigmas[321]){ 
@@ -312,6 +324,25 @@ public:
       fParameterSets[321]["KP_DBETA_SIGMA_C"].setName("KP_DBETA_SIGMA_C"); 
       for(TF1 f : mesonSigmas[321]){ 
 	fParameterSets[321]["KP_DBETA_SIGMA_C"].addValueAndError(f.GetParameter(0), 0.0); 
+      }
+
+      // --------------------------------------------------------------------------------
+      fParameterSets[-321]["KM_DBETA_SIGMA_A"] = ParameterSet(); 
+      fParameterSets[-321]["KM_DBETA_SIGMA_A"].setName("KM_DBETA_SIGMA_A"); 
+      for(TF1 f : mesonSigmas[-321]){ 
+	fParameterSets[-321]["KM_DBETA_SIGMA_A"].addValueAndError(f.GetParameter(2), 0.0); 
+      }
+
+      fParameterSets[-321]["KM_DBETA_SIGMA_B"] = ParameterSet(); 
+      fParameterSets[-321]["KM_DBETA_SIGMA_B"].setName("KM_DBETA_SIGMA_B"); 
+      for(TF1 f : mesonSigmas[-321]){ 
+	fParameterSets[-321]["KM_DBETA_SIGMA_B"].addValueAndError(f.GetParameter(1), 0.0); 
+      }
+
+      fParameterSets[-321]["KM_DBETA_SIGMA_C"] = ParameterSet(); 
+      fParameterSets[-321]["KM_DBETA_SIGMA_C"].setName("KM_DBETA_SIGMA_C"); 
+      for(TF1 f : mesonSigmas[-321]){ 
+	fParameterSets[-321]["KM_DBETA_SIGMA_C"].addValueAndError(f.GetParameter(0), 0.0); 
       }
 
       // --------------------------------------------------------------------------------
@@ -343,6 +374,16 @@ public:
 
       fParameters.saveParameters("resolution_parameters.dat"); 
 
+
+      std::cout << "A " << fParameterSets[-321]["KM_DBETA_MU_A"].getNumberOfValues() << std::endl; 
+      std::cout << "B " << fParameterSets[-321]["KM_DBETA_MU_B"].getNumberOfValues() << std::endl; 
+      std::cout << "C " << fParameterSets[-321]["KM_DBETA_MU_C"].getNumberOfValues() << std::endl; 
+
+      std::cout << "A " << fParameterSets[-211]["PIM_DBETA_MU_A"].getNumberOfValues() << std::endl; 
+      std::cout << "B " << fParameterSets[-211]["PIM_DBETA_MU_B"].getNumberOfValues() << std::endl; 
+      std::cout << "C " << fParameterSets[-211]["PIM_DBETA_MU_C"].getNumberOfValues() << std::endl; 
+
+      out->Close();
     }
 
 

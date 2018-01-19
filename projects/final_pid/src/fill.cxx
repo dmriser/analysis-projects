@@ -119,6 +119,12 @@ public:
 	electron = momCorr->PcorN(electron, -1, 11); 
 
 	for(int ipart=0; ipart<event.gpart; ipart++){
+
+	  // let's not consider the electron again 
+	  if (ipart == electronIndices[0]){
+	    continue; 
+	  }
+
 	  if (event.dc_sect[ipart]>0){
 	    
 	    if(event.id[ipart] == -211){
