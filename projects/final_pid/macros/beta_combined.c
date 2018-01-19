@@ -1,16 +1,16 @@
 {
 
-  TFile *histFile = TFile::Open("/volatile/clas12/dmriser/farm_out/final_pid_pass11/pid.root"); 
-  TFile *fitFile  = TFile::Open("../out/fits.root"); 
+  TFile *histFile = TFile::Open("/volatile/clas12/dmriser/farm_out/final_pid_pass15/pid.root"); 
+  TFile *fitFile  = TFile::Open("../out/fit_neg.root"); 
 
   const int NSECT  = 7; 
   const int NSLICE = 40; 
-  const int NPART  = 3; 
+  const int NPART  = 5; 
 
-  const int part[NPART]             = {211, 321, 2212};
-  const std::string partName[NPART] = {"pi+", "k+", "proton"}; 
+  const int part[NPART]             = {211, 321, 2212, -211, -321};
+  const std::string partName[NPART] = {"pi+", "k+", "proton", "pi-", "k-"}; 
 
-  float mass[NPART] = {0.139, 0.498, 0.938};
+  float mass[NPART] = {0.139, 0.498, 0.938, 0.139, 0.498};
 
   //  TH1D *slices[NSECT][NSLICE]; 
   TH2D *p_beta[NPART][NSECT];
@@ -95,6 +95,30 @@
   latex->DrawLatex(0.05, 0.45, "#beta"); 
   latex->SetTextAngle(0.0); 
   can->Print("beautiful_pbeta_prot.pdf");
+
+  can->Clear(); 
+  p_beta[3][1]->Draw("colz"); 
+  gPad->SetLogz(); 
+  up[3][1]->Draw("same"); 
+  low[3][1]->Draw("same"); 
+  latex->DrawLatex(0.45, 0.95, "p^{-}"); 
+  latex->DrawLatex(0.45, 0.05, "p (GeV/c)"); 
+  latex->SetTextAngle(90.0); 
+  latex->DrawLatex(0.05, 0.45, "#beta"); 
+  latex->SetTextAngle(0.0); 
+  can->Print("beautiful_pbeta_pim.pdf");
+
+  can->Clear(); 
+  p_beta[3][1]->Draw("colz"); 
+  gPad->SetLogz(); 
+  up[4][1]->Draw("same"); 
+  low[4][1]->Draw("same"); 
+  latex->DrawLatex(0.45, 0.95, "K^{-}"); 
+  latex->DrawLatex(0.45, 0.05, "p (GeV/c)"); 
+  latex->SetTextAngle(90.0); 
+  latex->DrawLatex(0.05, 0.45, "#beta"); 
+  latex->SetTextAngle(0.0); 
+  can->Print("beautiful_pbeta_km.pdf");
 
 
 }

@@ -57,7 +57,8 @@ public:
     counts[-321] = 0; 
 
     // nothing 
-    mesonHistos[211][cutTypes::none]  = new MesonHistograms("211_no_cut",   211); 
+    mesonHistos[211][cutTypes::none]   = new MesonHistograms("211_no_cut",   211); 
+    mesonHistos[-211][cutTypes::none]  = new MesonHistograms("-211_no_cut",  -211); 
     
     // I am trying to use 'standard' reactions to get really nice clean 
     // particle traces without applying cuts.  
@@ -126,6 +127,10 @@ public:
 	  }
 
 	  if (event.dc_sect[ipart]>0){
+
+	    if (event.q[ipart] < 0 && ipart != electronIndices[0]){
+	      mesonHistos[-211][cutTypes::none]->Fill(event, ipart); 
+	    }
 	    
 	    if(event.id[ipart] == -211){
 	      mesonHistos[-211][cutTypes::physicsEnhanced]->Fill(event, ipart); 
@@ -250,6 +255,7 @@ public:
     TFile *out = new TFile(outFile.c_str(), "recreate");
 
     mesonHistos[211][cutTypes::none]->Save(out); 
+    mesonHistos[-211][cutTypes::none]->Save(out); 
 
     mesonHistos[211][cutTypes::physicsEnhanced] ->Save(out); 
     mesonHistos[321][cutTypes::physicsEnhanced] ->Save(out); 
