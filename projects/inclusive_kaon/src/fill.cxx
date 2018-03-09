@@ -42,7 +42,12 @@ public:
     params = new Parameters(); 
     params->loadParameters(Form("%s/lists/parameters/data/final.pars", path.c_str())); 
 
+    paramsLoose = new Parameters(); 
+    paramsLoose->loadParameters(Form("%s/lists/parameters/data/final-loose.pars", path.c_str())); 
+
     filter      = new ParticleFilter(params);
+    filterLoose = new ParticleFilter(paramsLoose);
+
     //    filter->GetSelector(211)->DisableByName("Delta Z-Vertex Cut");
     //    filter->GetSelector(211)->DisableByRegex("Fid");
 
@@ -81,6 +86,12 @@ public:
     tupleWriter.addFloat("dist_ec_edep");
     tupleWriter.addFloat("dist_vz");
     tupleWriter.addFloat("dist_cc_theta");
+    tupleWriter.addFloat("dist_dcr1");
+    tupleWriter.addFloat("dist_dcr3");
+    tupleWriter.addFloat("dist_ecu");
+    tupleWriter.addFloat("dist_ecv");
+    tupleWriter.addFloat("dist_ecw");
+    tupleWriter.addFloat("dist_cc");
   }
 
   ~Analysis(){
@@ -107,25 +118,37 @@ public:
     for(int ientry=0; ientry<GetEntries(); ientry++){
       GetEntry(ientry);
 
-      std::vector<int> electronIndices = filter->getVectorOfParticleIndices(event, 11);
+      std::vector<int> electronIndices = filterLoose->getVectorOfParticleIndices(event, 11);
       if(!electronIndices.empty()){
 	
 	int electronIndex = electronIndices[0];
 	event.SetElectronIndex(electronIndex);
 	Corrections::correctEvent(&event, GetRunNumber(), GSIM);
 
-	std::map<std::string, float> distances = filter->eid_distance_map(event, electronIndices[0]); 
+	std::map<std::string, float> distances = filter->eid_distance_map(event, electronIndex); 
         tupleWriter.setFloat("dist_ecsf",    distances["EC_SAMPLING"]); 
         tupleWriter.setFloat("dist_ec_edep", distances["EC_IN_OUT"]); 
         tupleWriter.setFloat("dist_vz",      distances["Z_VERTEX"]); 
         tupleWriter.setFloat("dist_cc_theta",distances["CC_THETA"]); 
-	  
-	std::vector<int> kpIndices = filter->getVectorOfParticleIndices(event,  321); 
-	std::vector<int> kmIndices = filter->getVectorOfParticleIndices(event, -321); 
+        tupleWriter.setFloat("dist_dcr1",    distances["DC_R1_FID"]); 
+        tupleWriter.setFloat("dist_dcr3",    distances["DC_R3_FID"]); 
+        tupleWriter.setFloat("dist_ecu",     distances["EC_FID_U"]); 
+        tupleWriter.setFloat("dist_ecv",     distances["EC_FID_V"]); 
+        tupleWriter.setFloat("dist_ecw",     distances["EC_FID_W"]); 
+        tupleWriter.setFloat("dist_cc",      distances["CC_FID"]); 
+
+	/*
+	  This was actually causing an issue when using filter->getVectorOfParticleIndices()
+	  because the filter relies on finding an electron.  Let me explain, the point of using 
+	  two filters is so that the loose one is passed and the fractional distance from the 
+	  nominal one has limits (-1,1) for the nominal cuts but still retains events outside of the limit.
+	  These events are the ones which pass the looser cuts above.  Using filter-> below kills those! 
+	 */
+	std::vector<int> kpIndices = filterLoose->getVectorOfParticleIndices(event,  321); 
+	std::vector<int> kmIndices = filterLoose->getVectorOfParticleIndices(event, -321); 
 	//	Nathan::HadronIDResult result = hid->getIDResult(event);
 
 	if(!kpIndices.empty()){
-		  //	if(result.hasPip()){
 
 	  int mesonIndex       = kpIndices[0];
 	  TLorentzVector meson = event.GetTLorentzVector(mesonIndex, 321); 
@@ -160,7 +183,7 @@ public:
 	  PhysicsEvent ev = builder.getPhysicsEvent(electron, meson);
 
 	  if (ev.w > 2.0 && ev.qq > 1.0) {	
-	    DataEventCut_BetaPLikelihood *bpCut = (DataEventCut_BetaPLikelihood*) filter->GetSelector(211)->GetCut("Beta P Likelihood Cut 211");
+	    DataEventCut_BetaPLikelihood *bpCut = (DataEventCut_BetaPLikelihood*) filter->GetSelector(321)->GetCut("Beta P Likelihood Cut 321");
 
 	    // this needs to be called to get the confidence correct 
 	    bool garbageCan = bpCut->IsPassed(event, kpIndices[0]); 
@@ -176,8 +199,8 @@ public:
 	    tupleWriter.setFloat("eta",          ev.eta);
 	    tupleWriter.setFloat("theta_h",      ev.thetaHadron);
 	    tupleWriter.setFloat("phi_h",        ev.phiHadron);
-	    tupleWriter.setFloat("p_ele",        electron.P()); 
-	    tupleWriter.setFloat("p_mes",        meson.P()); 
+	    tupleWriter.setFloat("p_ele",        event.p[electronIndex]); 
+	    tupleWriter.setFloat("p_mes",        event.p[mesonIndex]); 
 	    tupleWriter.setFloat("theta_ele",    to_degrees*electron.Theta()); 
 	    tupleWriter.setFloat("theta_mes",    to_degrees*meson.Theta()); 
 	    tupleWriter.setFloat("phi_ele",      to_degrees*electron.Phi()); 
@@ -186,7 +209,6 @@ public:
 	    tupleWriter.setFloat("alpha",        bpCut->GetConfidence()); 
 	    tupleWriter.writeEvent();
 	  }
-
 	}
 
 	if(!kmIndices.empty()){
@@ -200,7 +222,7 @@ public:
 	  PhysicsEvent ev = builder.getPhysicsEvent(electron, meson);
 
 	  if (ev.w > 2.0 && ev.qq > 1.0) {	    
-	    DataEventCut_BetaPLikelihood *bpCut = (DataEventCut_BetaPLikelihood*) filter->GetSelector(211)->GetCut("Beta P Likelihood Cut 211");
+	    DataEventCut_BetaPLikelihood *bpCut = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
 
 	    // this needs to be called to get the confidence correct 
 	    bool garbageCan = bpCut->IsPassed(event, kmIndices[0]); 
@@ -216,8 +238,8 @@ public:
 	    tupleWriter.setFloat("eta",          ev.eta);
 	    tupleWriter.setFloat("theta_h",      ev.thetaHadron);
 	    tupleWriter.setFloat("phi_h",        ev.phiHadron);
-	    tupleWriter.setFloat("p_ele",        electron.P()); 
-	    tupleWriter.setFloat("p_mes",        meson.P()); 
+	    tupleWriter.setFloat("p_ele",        event.p[electronIndex]); 
+	    tupleWriter.setFloat("p_mes",        event.p[mesonIndex]); 
 	    tupleWriter.setFloat("theta_ele",    to_degrees*electron.Theta()); 
 	    tupleWriter.setFloat("theta_mes",    to_degrees*meson.Theta()); 
 	    tupleWriter.setFloat("phi_ele",      to_degrees*electron.Phi()); 

@@ -43,6 +43,7 @@ public:
 
     // setup structure of ntuple 
     tupleWriter.addInt("helicity");
+    tupleWriter.addInt("index");
     tupleWriter.addFloat("missing_mass"); 
     tupleWriter.addFloat("x"); 
     tupleWriter.addFloat("q2"); 
@@ -99,42 +100,48 @@ public:
 	  
 	std::vector<int> pipIndices = filter->getVectorOfParticleIndices(event, 211); 
 
-	if(!pipIndices.empty()){
+	if(!pipIndices.empty()){	  
+	  int currentPion = 0; 
 
-	  int pipIndex       = pipIndices[0];
-	  TLorentzVector pip = event.GetTLorentzVector(pipIndex, 211); 
+	  for(int pipIndex : pipIndices){
+	    currentPion++; 
 
-	  // momentum correction done here 
-	  // because if we dont find proton it's useless 
-	  // to waste cpu doing it above 
-	  TLorentzVector electron = event.GetTLorentzVector(electronIndex, 11); 
-	  electron = momCorr->PcorN(electron, -1, 11);
-	  
-	  // build event 
-	  PhysicsEvent ev = builder.getPhysicsEvent(electron, pip);
-
-	  if ( sqrt(ev.mm2) > 0.8 && sqrt(ev.mm2) < 1.08 
-	       && ev.w > 2.0 && ev.qq > 1.0) {
-
- 	    tupleWriter.setInt("helicity",       event.corr_hel);
-	    tupleWriter.setFloat("missing_mass", sqrt(ev.mm2));
-	    tupleWriter.setFloat("x",            ev.x);
-	    tupleWriter.setFloat("q2",           ev.qq);
-	    tupleWriter.setFloat("z",            ev.z);
-	    tupleWriter.setFloat("pt",           ev.pT);
-	    tupleWriter.setFloat("w",            ev.w);
-	    tupleWriter.setFloat("eta",          ev.eta);
-	    tupleWriter.setFloat("theta_h",      ev.thetaHadron);
-	    tupleWriter.setFloat("phi_h",        ev.phiHadron);
-	    tupleWriter.setFloat("p_ele",        electron.P()); 
-	    tupleWriter.setFloat("p_pip",        pip.P()); 
-	    tupleWriter.setFloat("dt", event.sc_t[electronIndex]-event.ec_t[electronIndex]);
-	    tupleWriter.setFloat("theta_ele",    to_degrees*electron.Theta()); 
-	    tupleWriter.setFloat("theta_pip",    to_degrees*pip.Theta()); 
-	    tupleWriter.setFloat("phi_ele",      to_degrees*electron.Phi()); 
-	    tupleWriter.setFloat("phi_pip",      to_degrees*pip.Phi()); 
-	    tupleWriter.setFloat("dvz",          event.vz[electronIndex]-event.vz[pipIndex]); 
-	    tupleWriter.writeEvent();
+	    TLorentzVector pip = event.GetTLorentzVector(pipIndex, 211); 
+	    
+	    // momentum correction done here 
+	    // because if we dont find proton it's useless 
+	    // to waste cpu doing it above 
+	    TLorentzVector electron = event.GetTLorentzVector(electronIndex, 11); 
+	    electron = momCorr->PcorN(electron, -1, 11);
+	    
+	    // build event 
+	    PhysicsEvent ev = builder.getPhysicsEvent(electron, pip);
+	    
+	    //	  if ( sqrt(ev.mm2) > 0.8 && sqrt(ev.mm2) < 1.08 
+	    //	       && ev.w > 2.0 && ev.qq > 1.0) {
+	    
+	    if(1){
+	      tupleWriter.setInt("helicity",       event.corr_hel);
+	      tupleWriter.setInt("index",       currentPion);
+	      tupleWriter.setFloat("missing_mass", sqrt(ev.mm2));
+	      tupleWriter.setFloat("x",            ev.x);
+	      tupleWriter.setFloat("q2",           ev.qq);
+	      tupleWriter.setFloat("z",            ev.z);
+	      tupleWriter.setFloat("pt",           ev.pT);
+	      tupleWriter.setFloat("w",            ev.w);
+	      tupleWriter.setFloat("eta",          ev.eta);
+	      tupleWriter.setFloat("theta_h",      ev.thetaHadron);
+	      tupleWriter.setFloat("phi_h",        ev.phiHadron);
+	      tupleWriter.setFloat("p_ele",        electron.P()); 
+	      tupleWriter.setFloat("p_pip",        pip.P()); 
+	      tupleWriter.setFloat("dt", event.sc_t[electronIndex]-event.ec_t[electronIndex]);
+	      tupleWriter.setFloat("theta_ele",    to_degrees*electron.Theta()); 
+	      tupleWriter.setFloat("theta_pip",    to_degrees*pip.Theta()); 
+	      tupleWriter.setFloat("phi_ele",      to_degrees*electron.Phi()); 
+	      tupleWriter.setFloat("phi_pip",      to_degrees*pip.Phi()); 
+	      tupleWriter.setFloat("dvz",          event.vz[electronIndex]-event.vz[pipIndex]); 
+	      tupleWriter.writeEvent();
+	    }
 	  }
 	}
       }

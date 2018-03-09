@@ -1,6 +1,6 @@
 {
 
-  TFile *histFile = TFile::Open("/volatile/clas12/dmriser/farm_out/final_pid_pass15/pid.root"); 
+  TFile *histFile = TFile::Open("/volatile/clas12/dmriser/farm_out/final_pid_pass16/pid.root"); 
   TFile *fitFile  = TFile::Open("../out/fit_neg.root"); 
 
   const int NSECT  = 7; 
