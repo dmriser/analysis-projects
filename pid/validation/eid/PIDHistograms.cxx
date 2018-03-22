@@ -97,7 +97,7 @@ PIDHistograms::PIDHistograms(){
 }
 
 void PIDHistograms::Fill(h22Event & event, int ipart, int cutType){
-  
+
   int sector = event.dc_sect[ipart];
   
   // filling histograms for all negatives hN_abc[0][x]
@@ -106,7 +106,7 @@ void PIDHistograms::Fill(h22Event & event, int ipart, int cutType){
   h1_ec_edep_inner[cutType][0] ->Fill(event.ec_ei[ipart]);
   h1_ec_edep_outer[cutType][0] ->Fill(event.ec_eo[ipart]);
   h1_p[cutType][0]             ->Fill(event.p[ipart]);
-  h1_z_vertex[cutType][0]      ->Fill(event.vz[ipart]);
+  h1_z_vertex[cutType][0]      ->Fill(event.corr_vz[ipart]);
   
   // 2-D 
   h2_cc_theta[cutType][0] ->Fill((event.cc_segm[ipart]%1000)/10, event.GetThetaCC(ipart));
@@ -122,7 +122,7 @@ void PIDHistograms::Fill(h22Event & event, int ipart, int cutType){
     h1_ec_edep_inner[cutType][sector] ->Fill(event.ec_ei[ipart]);
     h1_ec_edep_outer[cutType][sector] ->Fill(event.ec_eo[ipart]);
     h1_p[cutType][sector]             ->Fill(event.p[ipart]);
-    h1_z_vertex[cutType][sector]      ->Fill(event.vz[ipart]);
+    h1_z_vertex[cutType][sector]      ->Fill(event.corr_vz[ipart]);
     
     h2_cc_theta[cutType][sector] ->Fill((event.cc_segm[ipart]%1000)/10, event.GetThetaCC(ipart));
     h2_etot_p[cutType][sector]   ->Fill(event.p[ipart], event.etot[ipart]/event.p[ipart]);
@@ -154,8 +154,8 @@ void PIDHistograms::FillAllOthers(h22Event & event, int ipart, int cutType){
   */
   
   if(cutType == 2){
-    h1_z_vertex[NTYPE-1][0]->Fill(event.vz[ipart]);
-    if(sector > 0) { h1_z_vertex[NTYPE-1][sector]->Fill(event.vz[ipart]); }
+    h1_z_vertex[NTYPE-1][0]->Fill(event.corr_vz[ipart]);
+    if(sector > 0) { h1_z_vertex[NTYPE-1][sector]->Fill(event.corr_vz[ipart]); }
   }
   else if (cutType == 3){
     h2_ang_fid[NTYPE-1][0]->Fill(event.GetRelativePhi(ipart), event.GetTheta(ipart));    
@@ -270,25 +270,24 @@ int main (int argc, char * argv[]){
   // loop over events
   for (int iEvent = 0; iEvent < nEvents; iEvent++){
       reader.GetEntry(iEvent);
-      h22Event event = reader.GetEvent();
 
       // loop over all negatives in the event 
-      for(int ipart = 0; ipart < event.gpart; ipart++){     
-	  if (event.q[ipart] < 0){
+      for(int ipart = 0; ipart < reader.event.gpart; ipart++){     
+	  if (reader.event.q[ipart] < 0){
 
 	    //  holds the result of all cuts, intensive 
-	    std::map<std::string, bool> eID_Status = filter->eid_map(event, ipart);
+	    std::map<std::string, bool> eID_Status = filter->eid_map(reader.event, ipart);
 	    
-	      histos.Fill(event, ipart, 0);
-	      if(eID_Status["Z_VERTEX"]){    histos.Fill(event, ipart, 2); }
-	      if(eID_Status["CC_FID"]){      histos.Fill(event, ipart, 3); }
-	      if(eID_Status["CC_PHI"]){      histos.Fill(event, ipart, 4); }
-	      if(eID_Status["CC_THETA"]){    histos.Fill(event, ipart, 5); }
-	      if(eID_Status["DC_R1_FID"]){   histos.Fill(event, ipart, 6); }
-	      if(eID_Status["DC_R3_FID"]){   histos.Fill(event, ipart, 7); }
-	      if(eID_Status["EC_FID"]){      histos.Fill(event, ipart, 8); }
-	      if(eID_Status["EC_IN_OUT"]){   histos.Fill(event, ipart, 9); }
-	      if(eID_Status["EC_SAMPLING"]){ histos.Fill(event, ipart, 10); }
+	      histos.Fill(reader.event, ipart, 0);
+	      if(eID_Status["Z_VERTEX"]){    histos.Fill(reader.event, ipart, 2); }
+	      if(eID_Status["CC_FID"]){      histos.Fill(reader.event, ipart, 3); }
+	      if(eID_Status["CC_PHI"]){      histos.Fill(reader.event, ipart, 4); }
+	      if(eID_Status["CC_THETA"]){    histos.Fill(reader.event, ipart, 5); }
+	      if(eID_Status["DC_R1_FID"]){   histos.Fill(reader.event, ipart, 6); }
+	      if(eID_Status["DC_R3_FID"]){   histos.Fill(reader.event, ipart, 7); }
+	      if(eID_Status["EC_FID"]){      histos.Fill(reader.event, ipart, 8); }
+	      if(eID_Status["EC_IN_OUT"]){   histos.Fill(reader.event, ipart, 9); }
+	      if(eID_Status["EC_SAMPLING"]){ histos.Fill(reader.event, ipart, 10); }
 	      /*
 	      if(eID_Status["CC_FID"] && 
 		 eID_Status["EC_FID"] && 
@@ -308,7 +307,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_IN_OUT"]  &&
 		  eID_Status["EC_SAMPLING"]){
 
-		histos.FillAllOthers(event, ipart, 2);
+		histos.FillAllOthers(reader.event, ipart, 2);
 	      }
 
 	      if (eID_Status["Z_VERTEX"]   && 
@@ -320,7 +319,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_IN_OUT"]  &&
 		  eID_Status["EC_SAMPLING"]){
 
-		histos.FillAllOthers(event, ipart, 3);
+		histos.FillAllOthers(reader.event, ipart, 3);
 	      }
 
 	      if (eID_Status["Z_VERTEX"]   && 
@@ -332,7 +331,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_IN_OUT"]  &&
 		  eID_Status["EC_SAMPLING"]){
 
-		histos.FillAllOthers(event, ipart, 5);
+		histos.FillAllOthers(reader.event, ipart, 5);
 	      }
 
 	      if (eID_Status["Z_VERTEX"]   && 
@@ -345,7 +344,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_IN_OUT"]  &&
 		  eID_Status["EC_SAMPLING"]){
 
-		histos.FillAllOthers(event, ipart, 6);
+		histos.FillAllOthers(reader.event, ipart, 6);
 	      }
 
 	      if (eID_Status["Z_VERTEX"]   && 
@@ -357,7 +356,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_IN_OUT"]  &&
 		  eID_Status["EC_SAMPLING"]){
 
-		histos.FillAllOthers(event, ipart, 7);
+		histos.FillAllOthers(reader.event, ipart, 7);
 	      }
 
 	      if (eID_Status["Z_VERTEX"]   && 
@@ -368,7 +367,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_IN_OUT"]  &&
 		  eID_Status["EC_SAMPLING"]){
 
-		histos.FillAllOthers(event, ipart, 8);
+		histos.FillAllOthers(reader.event, ipart, 8);
 	      }
 
 	      if (eID_Status["Z_VERTEX"]   && 
@@ -380,7 +379,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_FID"]     && 
 		  eID_Status["EC_SAMPLING"]){
 
-		histos.FillAllOthers(event, ipart, 9);
+		histos.FillAllOthers(reader.event, ipart, 9);
 	      }
 
 	      if (eID_Status["Z_VERTEX"]   && 
@@ -392,7 +391,7 @@ int main (int argc, char * argv[]){
 		  eID_Status["EC_FID"]     && 
 		  eID_Status["EC_IN_OUT"]){
 
-		histos.FillAllOthers(event, ipart, 10);
+		histos.FillAllOthers(reader.event, ipart, 10);
 	      }
 
 
@@ -401,8 +400,12 @@ int main (int argc, char * argv[]){
       
 
       // look for electron in event
-      int e_index = filter->getByPID(event, 11);
-      if (e_index > -123){ histos.Fill(event, e_index, 1); }
+      std::vector<int> electronIndices = filter->getVectorOfParticleIndices(reader.event, 11); 
+
+      if(!electronIndices.empty()){
+	int electronIndex = electronIndices[0];
+	histos.Fill(reader.event, electronIndex, 1);
+      }
 
       if (iEvent%10000 == 0) {
 	statusBar.PrintStatus(iEvent, nEvents);
