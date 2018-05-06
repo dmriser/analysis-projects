@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-// bins from h22
+// binning tools 
 #include "DBins.h"
 
 // this project 

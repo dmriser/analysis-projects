@@ -50,8 +50,12 @@ public:
     tupleWriter.addTLorentzVector("proton"); 
     tupleWriter.addTLorentzVector("kaon_pos"); 
     tupleWriter.addTLorentzVector("kaon_neg"); 
+    tupleWriter.addTLorentzVector("pion_pos"); 
+    tupleWriter.addTLorentzVector("pion_neg"); 
     
     // pid variables for hadrons 
+    tupleWriter.addFloat("alpha_pion_pos");
+    tupleWriter.addFloat("alpha_pion_neg");
     tupleWriter.addFloat("alpha_kaon_pos");
     tupleWriter.addFloat("alpha_kaon_neg");
     tupleWriter.addFloat("alpha_proton");
@@ -116,8 +120,10 @@ public:
         tupleWriter.setFloat("dist_cc",      distances["CC_FID"]);
 	
 	// search mofo 
-	std::vector<int> kpIndices     = filterLoose->getVectorOfParticleIndices(event, 321);
+	std::vector<int> kpIndices     = filterLoose->getVectorOfParticleIndices(event,  321);
 	std::vector<int> kmIndices     = filterLoose->getVectorOfParticleIndices(event, -321);
+	std::vector<int> ppIndices     = filterLoose->getVectorOfParticleIndices(event,  211);
+	std::vector<int> pmIndices     = filterLoose->getVectorOfParticleIndices(event, -211);
 	std::vector<int> protonIndices = filterLoose->getVectorOfParticleIndices(event, 2212);
 
 
@@ -133,146 +139,232 @@ public:
 	    
 	    tupleWriter.setInt("helicity", event.corr_hel); 
 	    
-	    /* 
 	       if ( (kpIndices.size() > 0)&&(kmIndices.size() > 0) ){
-	       top = 2;
-	       tupleWriter.setInt("topology", top); 
-	       
-	       // getting likelihood 
-	       DataEventCut_BetaPLikelihood *bpCutKP = (DataEventCut_BetaPLikelihood*) filter->GetSelector(321) ->GetCut("Beta P Likelihood Cut 321");
-	       DataEventCut_BetaPLikelihood *bpCutKM = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
-	       
-	       // this needs to be called to get the confidence correct
-	       bool garbageCan = bpCutKP->IsPassed(event, kpIndices[0]);
-	       tupleWriter.setFloat("alpha_kaon_pos", bpCutKP->GetConfidence());
-	       
-	       garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
-	       tupleWriter.setFloat("alpha_kaon_neg", bpCutKM->GetConfidence());
-	       
-	       TLorentzVector kp = event.GetTLorentzVector(kpIndices[0], 321); 
-	       TLorentzVector km = event.GetTLorentzVector(kmIndices[0], -321); 
-	       
-	       PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, kp, km); 
-	       TLorentzVector proton = physicsEvent.finalState; 
-	       tupleWriter.setTLorentzVector("electron", electron); 
-	       tupleWriter.setTLorentzVector("proton", proton); 
-	       tupleWriter.setTLorentzVector("kaon_pos", kp); 
-	       tupleWriter.setTLorentzVector("kaon_neg", km); 
-	       
-	       
-	       
-	       tupleWriter.setFloat("alpha_proton",   0.0);
-	       
-	       tupleWriter.writeEvent(); 
+		 top = 2;
+		 tupleWriter.setInt("topology", top); 
+		 
+		 // getting likelihood 
+		 DataEventCut_BetaPLikelihood *bpCutKP = (DataEventCut_BetaPLikelihood*) filter->GetSelector(321) ->GetCut("Beta P Likelihood Cut 321");
+		 DataEventCut_BetaPLikelihood *bpCutKM = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
+		 
+		 // this needs to be called to get the confidence correct
+		 bool garbageCan = bpCutKP->IsPassed(event, kpIndices[0]);
+		 tupleWriter.setFloat("alpha_kaon_pos", bpCutKP->GetConfidence());
+		 
+		 garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
+		 tupleWriter.setFloat("alpha_kaon_neg", bpCutKM->GetConfidence());
+		 
+		 TLorentzVector kp = event.GetTLorentzVector(kpIndices[0], 321); 
+		 TLorentzVector km = event.GetTLorentzVector(kmIndices[0], -321); 
+		 
+		 PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, kp, km); 
+		 TLorentzVector proton = physicsEvent.finalState; 
+		 tupleWriter.setTLorentzVector("electron", electron); 
+		 tupleWriter.setTLorentzVector("proton", proton); 
+		 tupleWriter.setTLorentzVector("kaon_pos", kp); 
+		 tupleWriter.setTLorentzVector("kaon_neg", km); 
+		 
+		 
+		 
+		 tupleWriter.setFloat("alpha_proton",   0.0);
+		 
+		 tupleWriter.writeEvent(); 
 	       }
 	       
 	       
 	       if ( (kmIndices.size() > 0)&&(protonIndices.size() > 0) ){
-	       top = 1;
-	       tupleWriter.setInt("topology", top); 
-	       
-	       // getting likelihood
-	       DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212) ->GetCut("Beta P Likelihood Cut 2212");
-	       DataEventCut_BetaPLikelihood *bpCutKM     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
-	       
-	       // this needs to be called to get the confidence correct
-	       bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
-	       tupleWriter.setFloat("alpha_proton",   bpCutProton->GetConfidence());
-	       
-	       garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
-	       tupleWriter.setFloat("alpha_kaon_neg", bpCutKM->GetConfidence());
-	       
-	       TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
-	       TLorentzVector km = event.GetTLorentzVector(kmIndices[0], -321); 
-	       
-	       PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, proton, km); 
-	       TLorentzVector kp = physicsEvent.finalState; 
-	       tupleWriter.setTLorentzVector("electron", electron); 
-	       tupleWriter.setTLorentzVector("proton", proton); 
-	       tupleWriter.setTLorentzVector("kaon_pos", kp); 
-	       tupleWriter.setTLorentzVector("kaon_neg", km); 
-	       
-	       tupleWriter.setFloat("alpha_kaon_pos", 0.0);
-	       
-	       
-	       tupleWriter.writeEvent(); 
+		 top = 1;
+		 tupleWriter.setInt("topology", top); 
+		 
+		 // getting likelihood
+		 DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212) ->GetCut("Beta P Likelihood Cut 2212");
+		 DataEventCut_BetaPLikelihood *bpCutKM     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
+		 
+		 // this needs to be called to get the confidence correct
+		 bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
+		 tupleWriter.setFloat("alpha_proton",   bpCutProton->GetConfidence());
+		 
+		 garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
+		 tupleWriter.setFloat("alpha_kaon_neg", bpCutKM->GetConfidence());
+		 
+		 TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
+		 TLorentzVector km = event.GetTLorentzVector(kmIndices[0], -321); 
+		 
+		 PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, proton, km); 
+		 TLorentzVector kp = physicsEvent.finalState; 
+		 tupleWriter.setTLorentzVector("electron", electron); 
+		 tupleWriter.setTLorentzVector("proton", proton); 
+		 tupleWriter.setTLorentzVector("kaon_pos", kp); 
+		 tupleWriter.setTLorentzVector("kaon_neg", km); 
+		 
+		 tupleWriter.setFloat("alpha_kaon_pos", 0.0);
+		 
+		 
+		 tupleWriter.writeEvent(); 
 	       }
-	    */
-	    
-	    if ( (kpIndices.size() > 0)&&(protonIndices.size() > 0) ){
-	      top = 0;
-	      tupleWriter.setInt("topology", top); 
-	      
-	      // getting likelihood
-	      DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212) ->GetCut("Beta P Likelihood Cut 2212");
-	      DataEventCut_BetaPLikelihood *bpCutKP     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(321)->GetCut("Beta P Likelihood Cut 321");
-	      
-	      // this needs to be called to get the confidence correct
-	      bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
-	      float protonConf = bpCutProton->GetConfidence();
-	      tupleWriter.setFloat("alpha_proton", protonConf);
-	      
-	      garbageCan      = bpCutKP->IsPassed(event, kpIndices[0]);
-	      float kaonConf = bpCutKP->GetConfidence(); 
-	      tupleWriter.setFloat("alpha_kaon_pos", kaonConf);
-	      
-	      
-	      if( (protonConf > fMinConfidence) && (kaonConf > fMinConfidence) ){
-		TLorentzVector kp = event.GetTLorentzVector(kpIndices[0], 321); 
-		TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
-		
-		PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, kp, proton); 
+	       
+	       if ( (kpIndices.size() > 0)&&(protonIndices.size() > 0) ){
+		 top = 0;
+		 tupleWriter.setInt("topology", top); 
+		 
+		 // getting likelihood
+		 DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212) ->GetCut("Beta P Likelihood Cut 2212");
+		 DataEventCut_BetaPLikelihood *bpCutKP     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(321)->GetCut("Beta P Likelihood Cut 321");
+		 
+		 // this needs to be called to get the confidence correct
+		 bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
+		 float protonConf = bpCutProton->GetConfidence();
+		 tupleWriter.setFloat("alpha_proton", protonConf);
+		 
+		 garbageCan      = bpCutKP->IsPassed(event, kpIndices[0]);
+		 float kaonConf = bpCutKP->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_kaon_pos", kaonConf);
+		 
+		 
+		 if( (protonConf > fMinConfidence) && (kaonConf > fMinConfidence) ){
+		   TLorentzVector kp = event.GetTLorentzVector(kpIndices[0], 321); 
+		   TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
+		   
+		   PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, kp, proton); 
+		   
+		   TLorentzVector km = physicsEvent.finalState; 
+		   tupleWriter.setTLorentzVector("electron", electron); 
+		   tupleWriter.setTLorentzVector("proton",   proton); 
+		   tupleWriter.setTLorentzVector("kaon_pos", kp); 
+		   tupleWriter.setTLorentzVector("kaon_neg", km); 
+		   tupleWriter.setFloat("alpha_kaon_neg", 0.0);
+		   tupleWriter.writeEvent(); 
+		 }
+	       }
+	       
+	       if ( (kpIndices.size() > 0)&&(kmIndices.size() > 0)&&(protonIndices.size() > 0) ){
+		 top = 3;
+		 tupleWriter.setInt("topology", top); 
+		 
+		 DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212)->GetCut("Beta P Likelihood Cut 2212");
+		 DataEventCut_BetaPLikelihood *bpCutKP     = (DataEventCut_BetaPLikelihood*) filter->GetSelector( 321)->GetCut("Beta P Likelihood Cut 321");
+		 DataEventCut_BetaPLikelihood *bpCutKM     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
+		 
+		 // this needs to be called to get the confidence correct
+		 bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
+		 float protonConf = bpCutProton->GetConfidence();	    
+		 tupleWriter.setFloat("alpha_proton",   protonConf);
+		 
+		 garbageCan      = bpCutKP->IsPassed(event, kpIndices[0]);
+		 float kpConf = bpCutKP->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_kaon_pos", kpConf);
+		 
+		 garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
+		 float kmConf = bpCutKM->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_kaon_neg", kmConf);
+		 
+		 if ( (kmConf > fMinConfidence) && (kpConf > fMinConfidence) && (protonConf > fMinConfidence) ){
+		   TLorentzVector kp     = event.GetTLorentzVector(kpIndices[0], 321); 
+		   TLorentzVector km     = event.GetTLorentzVector(kmIndices[0], -321); 
+		   TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
+		   
+		   PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, kp, km, proton); 
+		   
+		   tupleWriter.setTLorentzVector("electron", electron); 
+		   tupleWriter.setTLorentzVector("proton", proton); 
+		   tupleWriter.setTLorentzVector("kaon_pos", kp); 
+		   tupleWriter.setTLorentzVector("kaon_neg", km); 
+		   tupleWriter.writeEvent(); 
+		 }
+	       }
 
-		if(sqrt(physicsEvent.mm2) > 0.25 && sqrt(physicsEvent.mm2) < 0.75){
-		  TLorentzVector km = physicsEvent.finalState; 
-		  tupleWriter.setTLorentzVector("electron", electron); 
-		  tupleWriter.setTLorentzVector("proton",   proton); 
-		  tupleWriter.setTLorentzVector("kaon_pos", kp); 
-		  tupleWriter.setTLorentzVector("kaon_neg", km); 
-		  tupleWriter.setFloat("alpha_kaon_neg", 0.0);
-		  tupleWriter.writeEvent(); 
-		}
-	      }
-	    }
-	    
-	    if ( (kpIndices.size() > 0)&&(kmIndices.size() > 0)&&(protonIndices.size() > 0) ){
-	      top = 3;
-	      tupleWriter.setInt("topology", top); 
-	      
-	      DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212)->GetCut("Beta P Likelihood Cut 2212");
-	      DataEventCut_BetaPLikelihood *bpCutKP     = (DataEventCut_BetaPLikelihood*) filter->GetSelector( 321)->GetCut("Beta P Likelihood Cut 321");
-	      DataEventCut_BetaPLikelihood *bpCutKM     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
-	      
-	      // this needs to be called to get the confidence correct
-	      bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
-	      float protonConf = bpCutProton->GetConfidence();	    
-	      tupleWriter.setFloat("alpha_proton",   protonConf);
-	      
-	      garbageCan      = bpCutKP->IsPassed(event, kpIndices[0]);
-	      float kpConf = bpCutKP->GetConfidence(); 
-	      tupleWriter.setFloat("alpha_kaon_pos", kpConf);
-	      
-	      garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
-	      float kmConf = bpCutKM->GetConfidence(); 
-	      tupleWriter.setFloat("alpha_kaon_neg", kmConf);
-	      
-	      if ( (kmConf > fMinConfidence) && (kpConf > fMinConfidence) && (protonConf > fMinConfidence) ){
-		TLorentzVector kp     = event.GetTLorentzVector(kpIndices[0], 321); 
-		TLorentzVector km     = event.GetTLorentzVector(kmIndices[0], -321); 
-		TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
-		
-		PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, kp, km, proton); 
+	       if ( (kpIndices.size() > 0) && 
+		    (kmIndices.size() > 0) &&
+		    (protonIndices.size() > 0) && 
+		    (ppIndices.size() > 0)){
+		 top = 4;
+		 tupleWriter.setInt("topology", top); 
+		 
+		 DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212)->GetCut("Beta P Likelihood Cut 2212");
+		 DataEventCut_BetaPLikelihood *bpCutKP     = (DataEventCut_BetaPLikelihood*) filter->GetSelector( 321)->GetCut("Beta P Likelihood Cut 321");
+		 DataEventCut_BetaPLikelihood *bpCutPP     = (DataEventCut_BetaPLikelihood*) filter->GetSelector( 211)->GetCut("Beta P Likelihood Cut 211");
+		 DataEventCut_BetaPLikelihood *bpCutKM     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
+		 
+		 // this needs to be called to get the confidence correct
+		 bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
+		 float protonConf = bpCutProton->GetConfidence();	    
+		 tupleWriter.setFloat("alpha_proton",   protonConf);
+		 
+		 garbageCan      = bpCutKP->IsPassed(event, kpIndices[0]);
+		 float kpConf = bpCutKP->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_kaon_pos", kpConf);
 
-		if(physicsEvent.mm2 < 0.2 && physicsEvent.mm2 > -0.2 ){
-		  tupleWriter.setTLorentzVector("electron", electron); 
-		  tupleWriter.setTLorentzVector("proton", proton); 
-		  tupleWriter.setTLorentzVector("kaon_pos", kp); 
-		  tupleWriter.setTLorentzVector("kaon_neg", km); 
-		  tupleWriter.writeEvent(); 
-		}
-	      }
-	    }
-	    
+		 garbageCan      = bpCutPP->IsPassed(event, ppIndices[0]);
+		 float ppConf = bpCutPP->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_pion_pos", ppConf);
+		 
+		 garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
+		 float kmConf = bpCutKM->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_kaon_neg", kmConf);
+		 
+		 if ( (kmConf > fMinConfidence) && (kpConf > fMinConfidence) && 
+		      (protonConf > fMinConfidence) && (ppConf > fMinConfidence)){
+		   TLorentzVector kp     = event.GetTLorentzVector(kpIndices[0], 321); 
+		   TLorentzVector pp     = event.GetTLorentzVector(ppIndices[0], 211); 
+		   TLorentzVector km     = event.GetTLorentzVector(kmIndices[0], -321); 
+		   TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
+		   
+		   PhysicsEvent physicsEvent = builder.getPhysicsEvent(electron, kp, km, proton); 
+
+		   tupleWriter.setTLorentzVector("electron", electron); 
+		   tupleWriter.setTLorentzVector("proton",   proton); 
+		   tupleWriter.setTLorentzVector("kaon_pos", kp); 
+		   tupleWriter.setTLorentzVector("pion_pos", pp); 
+		   tupleWriter.setTLorentzVector("kaon_neg", km); 
+		   tupleWriter.writeEvent(); 
+		 }
+	       }
+
+
+	       if ( (kpIndices.size() > 0) && 
+		    (kmIndices.size() > 0) &&
+		    (protonIndices.size() > 0) && 
+		    (pmIndices.size() > 0)){
+		 top = 5;
+		 tupleWriter.setInt("topology", top); 
+		 
+		 DataEventCut_BetaPLikelihood *bpCutProton = (DataEventCut_BetaPLikelihood*) filter->GetSelector(2212)->GetCut("Beta P Likelihood Cut 2212");
+		 DataEventCut_BetaPLikelihood *bpCutKP     = (DataEventCut_BetaPLikelihood*) filter->GetSelector( 321)->GetCut("Beta P Likelihood Cut 321");
+		 DataEventCut_BetaPLikelihood *bpCutPM     = (DataEventCut_BetaPLikelihood*) filter->GetSelector( -211)->GetCut("Beta P Likelihood Cut -211");
+		 DataEventCut_BetaPLikelihood *bpCutKM     = (DataEventCut_BetaPLikelihood*) filter->GetSelector(-321)->GetCut("Beta P Likelihood Cut -321");
+		 
+		 // this needs to be called to get the confidence correct
+		 bool garbageCan = bpCutProton->IsPassed(event, protonIndices[0]);
+		 float protonConf = bpCutProton->GetConfidence();	    
+		 tupleWriter.setFloat("alpha_proton",   protonConf);
+		 
+		 garbageCan      = bpCutKP->IsPassed(event, kpIndices[0]);
+		 float kpConf = bpCutKP->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_kaon_pos", kpConf);
+
+		 garbageCan      = bpCutPM->IsPassed(event, pmIndices[0]);
+		 float pmConf = bpCutPM->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_pion_pos", pmConf);
+		 
+		 garbageCan      = bpCutKM->IsPassed(event, kmIndices[0]);
+		 float kmConf = bpCutKM->GetConfidence(); 
+		 tupleWriter.setFloat("alpha_kaon_neg", kmConf);
+		 
+		 if ( (kmConf > fMinConfidence) && (kpConf > fMinConfidence) && 
+		      (protonConf > fMinConfidence) && (pmConf > fMinConfidence)){
+		   TLorentzVector kp     = event.GetTLorentzVector(kpIndices[0],      321); 
+		   TLorentzVector pm     = event.GetTLorentzVector(pmIndices[0],     -211); 
+		   TLorentzVector km     = event.GetTLorentzVector(kmIndices[0],     -321); 
+		   TLorentzVector proton = event.GetTLorentzVector(protonIndices[0], 2212); 
+		   
+		   tupleWriter.setTLorentzVector("electron", electron); 
+		   tupleWriter.setTLorentzVector("proton",   proton); 
+		   tupleWriter.setTLorentzVector("kaon_pos", kp); 
+		   tupleWriter.setTLorentzVector("pion_neg", pm); 
+		   tupleWriter.setTLorentzVector("kaon_neg", km); 
+		   tupleWriter.writeEvent(); 
+		 }
+	       }
 	  }	    
 	}
       }
@@ -356,9 +448,9 @@ int main(int argc, char *argv[]){
 
     std::vector<std::string> files;
     if (opts.args["LIST"].args != "UNSET"){
-      files = loadFilesFromList(opts.args["LIST"].args, 10000);
+      files = loadFilesFromList(opts.args["LIST"].args, opts.args["N"].arg);
     } else {
-      files = loadFilesFromCommandLine(&opts, 10000);
+      files = loadFilesFromCommandLine(&opts, opts.args["N"].arg);
     }
 
     for (std::string f : files){
