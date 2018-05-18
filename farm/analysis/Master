@@ -2,11 +2,11 @@
 
 # User Parameters 
 set numberOfJobs = 20
-set binDir       = "/u/home/dmriser/clas/analysis-projects/pid/calib/phi_1020/src"
-set binName      = "clary"
+set binDir       = "/u/home/dmriser/clas/analysis-projects/projects/corrections/src"
+set binName      = "fill"
 set sourceDir    = "/u/home/dmriser/clas/analysis-projects/farm/analysis"
 set outDir       = "/volatile/clas12/dmriser/farm_out/"
-set outName      = "stefan_skim_pass0"
+set outName      = "corrections_pass0"
 set runScript    = "goAnalyze"
 set fileList     = "/u/home/dmriser/clas/analysis-main/lists/files/data/good_files.dat"
 set sourceCode   = "/u/home/dmriser/clas/analysis-main/"
