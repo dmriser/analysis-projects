@@ -11,10 +11,12 @@ env.Append(CPPPATH = ['$h22libs/include/analysis/', '$h22libs/include/database/'
 		       '$h22libs/include/tools/', '$h22libs/include/config/', '$h22libs/momCorr/', '$MODELLIB/include/'])
 
 env.Append(LIBPATH = ['$h22libs/lib/'],LIBS = ['h22'])
+env.Append(LIBPATH = ['$MODELLIB/lib/'], LIBS = ['CppModel','FortranModel'])
 env.Append(LIBPATH = ['$ROOTSYS/lib/'], LIBS=['Tree', 'tbb', 'Imt'])
 
-# sources = glob.glob('src/*.cxx')
-sources = ['src/fillHistograms.cxx', ]
+sources = glob.glob('src/*.cxx')
+# sources = ['src/fillHistograms.cxx', 'src/doCrossSection.cxx']
+# sources = ['src/fillHistograms.cxx']
 
 for target in sources:
     env.Program(target)

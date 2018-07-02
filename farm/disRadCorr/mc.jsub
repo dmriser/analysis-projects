@@ -5,10 +5,10 @@ PROJECT:     e1f
 TIME:        720
 DISK_SPACE:  1024 MB
 MEMORY:      2048 MB
-MULTI_JOBS:  500
+MULTI_JOBS:  5
 
-COMMAND:    chmod +x goSimulate; ./goSimulate /volatile/clas12/dmriser/analysis/mcdata inclusiveRadCorrPass4/ 
+COMMAND:    chmod +x goSimulate; ./goSimulate /volatile/clas12/dmriser/mc/rad_corr/ pass0/ 
 
 OTHER_FILES: 
-/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/farm/disRadCorr/getJobNumber
-/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/farm/disRadCorr/goSimulate
+/u/home/dmriser/clas/analysis-projects/farm/disRadCorr/getJobNumber
+/u/home/dmriser/clas/analysis-projects/farm/disRadCorr/goSimulate

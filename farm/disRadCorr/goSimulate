@@ -5,11 +5,11 @@ set project   = $2
 set number    = `getJobNumber $outputDir $project`
 
 # Get environment and tools 
-source /group/clas/builds/environment.csh 
-cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_rad/keppel_rad               keppel_rad
-cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_norad/keppel_norad           keppel_norad
-cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_rad/inputFiles/radCorr.inp   rad.inp
-cp /u/home/dmriser/mydoc/CLASSourceCode/keppel_norad/inputFiles/radCorr.inp norad.inp
+source /group/clas/builds/centos7/environment.csh 
+cp /u/home/dmriser/clas/event-gen/keppel_rad/keppel_rad               keppel_rad
+cp /u/home/dmriser/clas/event-gen/keppel_norad/keppel_norad           keppel_norad
+cp /u/home/dmriser/clas/event-gen/keppel_rad/inputFiles/radCorr.inp   rad.inp
+cp /u/home/dmriser/clas/event-gen/keppel_norad/inputFiles/radCorr.inp norad.inp
 
 # Create if non-existent
 mkdir -p $outputDir/$project/JOB_$number 

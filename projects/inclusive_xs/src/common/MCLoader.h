@@ -56,6 +56,7 @@ MCLoader::MCLoader(PhysicsEventSelector *eventCriteria, Parameters *pars, std::s
 }
 
 MCLoader::~MCLoader(){
+  filter->GetSelector(11)->PrintSummary(); 
 }
 
 void MCLoader::Initialize(){
