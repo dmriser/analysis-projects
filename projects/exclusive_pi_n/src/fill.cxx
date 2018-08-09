@@ -38,20 +38,16 @@ public:
 
     std::string nathanPath = Global::Environment::GetNathanPath();
 
-    // setup reader options 
-    GSIM = false; 
-    Init();
-
     // needs parameters 
     params = new Parameters(); 
-    params->loadParameters(Form("%s/lists/final.pars", path.c_str())); 
+    params->loadParameters(Form("%s/lists/parameters/data/final.pars", path.c_str())); 
 
     paramsLoose = new Parameters(); 
-    paramsLoose->loadParameters(Form("%s/lists/dataLoose.pars", path.c_str())); 
+    paramsLoose->loadParameters(Form("%s/lists/parameters/data/dataLoose.pars", path.c_str())); 
     //    paramsLoose->loadParameters(Form("%s/lists/data.pars", path.c_str())); 
 
     paramsTight = new Parameters(); 
-    paramsTight->loadParameters(Form("%s/lists/dataTight.pars", path.c_str())); 
+    paramsTight->loadParameters(Form("%s/lists/parameters/data/dataTight.pars", path.c_str())); 
     //    paramsTight->loadParameters(Form("%s/lists/data.pars", path.c_str())); 
 
     filter      = new ParticleFilter(params);
@@ -108,6 +104,10 @@ public:
 
   void Loop(){
     
+    // This has to be called after 
+    // files are added to the tree. 
+    Init(); 
+
     // setup particle filter 
     filter->set_info(GSIM, GetRunNumber());
     hid->SetRunNumber( GetRunNumber() );
