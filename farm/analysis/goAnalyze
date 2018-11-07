@@ -23,10 +23,10 @@ chmod +x $binName
 #./$binName -N=$NFILES -LIST=list.dat -PARS=$ANALTOP/lists/parameters/data/final.pars -OUT=$OUTPUT
 
 # Inclusive Data 
-#./$binName -N=$NFILES -TYPE=data -LIST=list.dat -PARS=$ANALTOP/lists/parameters/data/final.pars -OUT=$OUTPUT
+./$binName -N=$NFILES -TYPE=data -LIST=list.dat -PARS=$ANALTOP/lists/parameters/data/final.pars -OUT=$OUTPUT
 
 # Inclusive MC
-./$binName -N=$NFILES -TYPE=mcrad -LIST=list.dat -PARS=$ANALTOP/lists/parameters/mc/keppelRadFinal.pars -OUT=$OUTPUT
+# ./$binName -N=$NFILES -TYPE=mcrad -LIST=list.dat -PARS=$ANALTOP/lists/parameters/mc/keppelRadFinal.pars -OUT=$OUTPUT
 
 # Elastic Script 
 #./$binName -N=$NFILES -TYPE=data -WMIN=0.1 -WMAX=1.1 -LIST=list.dat -PARS=/u/home/dmriser/mydoc/analysis/root_scripts/Analysis_v2/lists/data.pars -OUT=$OUTPUT

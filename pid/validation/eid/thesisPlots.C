@@ -15,8 +15,8 @@
 
 void thesisPlots(){
 
-  TFile * file = TFile::Open("/volatile/clas12/dmriser/rootFiles/pid/eid/small.root");
-  //  TFile * file = TFile::Open("PID.root");
+  //  TFile * file = TFile::Open("/volatile/clas12/dmriser/rootFiles/pid/eid/small.root");
+  TFile * file = TFile::Open("PID.root");
   TCanvas * c1 = new TCanvas("c1", "", 1000, 900);
 
   std::string imagePath("/volatile/clas12/dmriser/plots/pid/eid"); 
@@ -300,7 +300,7 @@ void thesisPlots(){
     left[isect-1]->SetLineWidth(2);
     left[isect-1]->Draw("same");
  
-    right[isect-1] = new TLine(-22.6864, 0.0, -22.6864, h1_z_vertex[0][isect]->GetMaximum());
+    right[isect-1] = new TLine(-21.85, 0.0, -21.85, h1_z_vertex[0][isect]->GetMaximum());
     right[isect-1]->SetLineColor(99);
     right[isect-1]->SetLineStyle(2);
     right[isect-1]->SetLineWidth(2);

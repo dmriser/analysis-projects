@@ -57,8 +57,7 @@ public:
   TH2F *h2_ec_edep[NTYPE][NSECT];
   TH2F *h2_dcr1_fid[NTYPE][NSECT];
   TH2F *h2_dcr3_fid[NTYPE][NSECT];
-  TH2F *h2_ec_fid[NTYPE][NSECT];
-  
+  TH2F *h2_ec_fid[NTYPE][NSECT];  
 
   void Fill(h22Event & event, int ipart, int cutType);
   void FillAllOthers(h22Event & event, int ipart, int cutType);
