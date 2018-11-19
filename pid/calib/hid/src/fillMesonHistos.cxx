@@ -19,6 +19,7 @@
 #include "CommonTools.h"
 #include "Corrections.h"
 #include "h22Event.h"
+#include "h22Reader.h"
 #include "h22Option.h"
 #include "GenericAnalysis.h"
 #include "MesonHistograms.h"
@@ -35,10 +36,10 @@
 std::vector<std::string> loadFilesFromList(std::string fileList, int numFiles);
 std::vector<std::string> loadFilesFromCommandLine(h22Options * theseOpts, int numFiles);
 
-class HIDCalibration : public GenericAnalysis {
+class HIDCalibration : public h22Reader {
 
 public:
-    HIDCalibration(h22Options *opts, Parameters *params) : GenericAnalysis(opts), pars(params) { }
+    HIDCalibration(h22Options *opts, Parameters *params) : pars(params) { }
     ~HIDCalibration(){ }
 
 public:
@@ -52,9 +53,9 @@ public:
   MesonHistograms *pimHistos; 
   MesonHistograms *kpHistos; 
   MesonHistograms *kmHistos; 
-
+ 
   void Initialize();
-  void ProcessEvent();
+  void Process(long int n_events);
   void Save(string outputFilename);
   void InitHistos();
   bool CurrentParticleIsNotElectronCandidate(std::vector<int> &electronCandidates, int index);
@@ -84,8 +85,18 @@ void HIDCalibration::Initialize(){
   momCorr = new MomCorr_e1f(momCorrPath);
 }
 
-void HIDCalibration::ProcessEvent(){
-    // Load up hadrons if we've electron.
+void HIDCalibration::Process(long int n_events){
+  
+  GSIM = false; 
+  Init(); 
+
+  long int events_to_process = (n_events > GetEntries() ? GetEntries() : n_events); 
+
+  for (int ientry = 0; ientry < events_to_process; ientry++){
+
+    GetEntry(ientry); 
+
+  // Load up hadrons if we've electron.
   std::vector<int> electronCandidates = filter->getVectorOfParticleIndices(event, 11);
 
   if ( !electronCandidates.empty() ){
@@ -94,7 +105,7 @@ void HIDCalibration::ProcessEvent(){
     int electronIndex = electronCandidates[0];
     event.SetElectronIndex(electronIndex); 
     corr.correctEvent(&event, GetRunNumber(), GSIM); 
-
+    
     TLorentzVector electron = event.GetTLorentzVector(electronIndex, 11);
     PhysicsEvent candidateEvent = builder->getPhysicsEvent(electron); 
     electron = momCorr->PcorN(electron, -1, 11);    
@@ -116,20 +127,21 @@ void HIDCalibration::ProcessEvent(){
 	  PhysicsEvent physEv = builder->getPhysicsEvent(electron, candidate); 
 	  
 	  //	  if (dvz < 4.0  && event.etot[ipart] > 0.01){
-	    if (dvz < 1000.0){
-	      if (event.q[ipart] == 1){ 
-		pipHistos->Fill(event, physEv, ipart); 
-		kpHistos->Fill(event, physEv, ipart);
-	      }
-
-	      else if (event.q[ipart] == -1){
-		pimHistos->Fill(event, physEv, ipart); 
-		kmHistos->Fill(event, physEv, ipart);
-	      }
+	  if (dvz < 1000.0){
+	    if (event.q[ipart] == 1){ 
+	      pipHistos->Fill(event, physEv, ipart); 
+	      kpHistos->Fill(event, physEv, ipart);
 	    }
+	    
+	    else if (event.q[ipart] == -1){
+	      pimHistos->Fill(event, physEv, ipart); 
+	      kmHistos->Fill(event, physEv, ipart);
+	    }
+	  }
 	}
       }
     }
+  }
   }
 }
 
@@ -179,10 +191,18 @@ int main(int argc, char * argv[]){
   } else {
     files = loadFilesFromCommandLine(&opts, 10000);
   }
-  
+
+  // Adding files and starting an instance
+  // of our main module. 
   HIDCalibration Analysis(&opts, &pars);
-  for (int i=0; i<files.size(); i++) { Analysis.AddFile( files[i] ); }
-  Analysis.RunAnalysis();
+  for (int i=0; i<files.size(); i++) { 
+    Analysis.AddFile( files[i] ); 
+  }
+
+  // Running and saving our calibration. 
+  Analysis.InitHistos();
+  Analysis.Initialize();
+  Analysis.Process(nev);
   Analysis.Save(opts.args["OUT"].args); 
   
   return 0;

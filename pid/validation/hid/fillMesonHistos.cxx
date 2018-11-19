@@ -26,7 +26,6 @@
 #include "MomCorr.h"
 #include "Parameters.h"
 #include "ParameterSet.h"
-#include "Pars.h"
 #include "ParticleFilter.h"
 #include "PhysicsEvent.h"
 #include "PhysicsEventBuilder.h"

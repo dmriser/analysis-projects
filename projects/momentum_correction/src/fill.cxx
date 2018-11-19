@@ -69,11 +69,11 @@ Histograms *buildHistograms(std::string baseName){
 
     title = Form("mm_sigma_%s_sect%d", baseName.c_str(), isect+1); 
     histos->mm_sigma[isect] = new TH1F(title.c_str(), title.c_str(), 
-				       100, 1.0, 1.3);
+				       200, 1.0, 1.3);
 
     title = Form("mm_sigma_corr_%s_sect%d", baseName.c_str(), isect+1); 
     histos->mm_sigma_corr[isect] = new TH1F(title.c_str(), title.c_str(), 
-				       100, 1.0, 1.3);
+				       200, 1.0, 1.3);
 
     title = Form("w_vz_%s_sect%d", baseName.c_str(), isect+1); 
     histos->w_vz[isect] = new TH2F(title.c_str(), title.c_str(), 
