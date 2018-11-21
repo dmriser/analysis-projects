@@ -21,7 +21,6 @@
 #include "h22Event.h"
 #include "h22Option.h"
 #include "h22Reader.h"
-#include "GenericAnalysis.h"
 #include "MesonHistograms.h"
 #include "MomCorr.h"
 #include "Parameters.h"
@@ -30,6 +29,7 @@
 #include "PhysicsEvent.h"
 #include "PhysicsEventBuilder.h"
 #include "StandardHistograms.h"
+#include "StatusBar.h"
 
 #include "TCanvas.h"
 #include "TF1.h"
@@ -40,10 +40,13 @@
 #include "TLorentzVector.h"
 
 
-class HIDCalibration : public GenericAnalysis {
+class HIDCalibration : public h22Reader {
 
 public:
-    HIDCalibration(h22Options *opts, Parameters *params) : GenericAnalysis(opts), pars(params) { }
+    HIDCalibration(h22Options *opts, Parameters *params) : pars(params) { 
+      InitHistos(); 
+      Initialize(); 
+    }
     ~HIDCalibration(){ }
 
 public:
@@ -75,10 +78,13 @@ public:
   StandardHistograms *kpStand; 
   StandardHistograms *kmStand; 
 
+  StatusBar *bar; 
+
   void Initialize();
   void ProcessEvent();
   void Save(string outputFilename);
   void InitHistos();
+  void Loop();
   bool CurrentParticleIsNotElectronCandidate(std::vector<int> &electronCandidates, int index);
 
 };
@@ -107,11 +113,9 @@ void HIDCalibration::InitHistos() {
 }
 
 void HIDCalibration::Initialize(){
-  InitHistos();
   
+  bar = new StatusBar();
   filter = new ParticleFilter(pars);
-  filter->set_info(GSIM, GetRunNumber());
-
   builder = new PhysicsEventBuilder(); 
 
   // not really safe for use on the farm because I don't set vars 
@@ -119,7 +123,24 @@ void HIDCalibration::Initialize(){
   // as a parameter would be ok? 
   std::string path = Global::Environment::GetAnalysisPath(); 
   std::string momCorrPath = Form("%s/momCorr/",path.c_str());
-  momCorr = new MomCorr_e1f("/u/home/dmriser/Analysis_v2/momCorr/");
+  momCorr = new MomCorr_e1f(momCorrPath);
+}
+
+void HIDCalibration::Loop(){
+
+  GSIM = false; 
+  Init();
+  filter->set_info(GSIM, GetRunNumber());
+
+  for (int ievent = 0; ievent < GetEntries(); ievent++){
+    GetEntry(ievent);
+    ProcessEvent();
+
+    if ( ievent%10000 == 0 ){
+      bar->PrintStatus(ievent, GetEntries());
+    }
+  }
+
 }
 
 void HIDCalibration::ProcessEvent(){
@@ -205,7 +226,7 @@ void HIDCalibration::ProcessEvent(){
 	    posCutDVzHistos->Fill(event, physicsEvent, ipart); 
 	  }
 
-	  if (filter->GetSelector(321)->GetCut("DC Region 1 Fid Cut")->IsPassed(event, ipart)){
+	  if (filter->positiveMesonCandidateSelector->GetCut("DC Region 1 Fid Cut")->IsPassed(event, ipart)){
 	    posCutDCHistos->Fill(event, physicsEvent, ipart); 
 	  }
 
@@ -277,18 +298,18 @@ int main(int argc, char * argv[]){
 
     std::vector<std::string> files; 
     if (opts.args["LIST"].args != "UNSET"){
-      files = loadFilesFromList(opts.args["LIST"].args, 10000);
+      files = loadFilesFromList(opts.args["LIST"].args, opts.args["N"].arg);
     } else {
-      files = loadFilesFromCommandLine(&opts, 10000);
+      files = loadFilesFromCommandLine(&opts, opts.args["N"].arg);
     }
 
     HIDCalibration Analysis(&opts, &pars);
     for (std::vector<std::string>::iterator it=files.begin(); it<files.end(); it++) { Analysis.AddFile(*it); }
-    Analysis.RunAnalysis();
+    Analysis.Loop();
     Analysis.Save(opts.args["OUT"].args);
 
-    Analysis.filter->GetSelector(321)->PrintSummary(); 
-    Analysis.filter->GetSelector(-321)->PrintSummary(); 
+    //    Analysis.filter->GetSelector(321)->PrintSummary(); 
+    //    Analysis.filter->GetSelector(-321)->PrintSummary(); 
 
     return 0;
 }

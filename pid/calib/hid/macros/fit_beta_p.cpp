@@ -6,9 +6,9 @@ namespace constants {
   const std::string input_filename("../testing.root");
   const std::string output_directory("/volatile/clas12/dmriser/plots/pid");
   const static int n_sectors = 7;
-  const static int n_slices = 15;
+  const static int n_slices = 20;
   const static float p_min = 0.5; 
-  const static float p_max = 3.5; 
+  const static float p_max = 2.5; 
   const static float pion_mass = 0.139; 
   const static float kaon_mass = 0.493; 
   const static float proton_mass = 0.938; 
