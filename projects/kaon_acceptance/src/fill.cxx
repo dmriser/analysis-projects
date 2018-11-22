@@ -82,6 +82,7 @@ MonteCarloParticle * getParticle(h22Event & event, int pid, float tolerance){
   return particle; 
 }
 
+
 class Analysis : public h22Reader {
 public:  
   Analysis() {
@@ -97,24 +98,27 @@ public:
     filter      = new ParticleFilter(params);
 
     // setup structure of ntuple 
-    tupleWriter.addInt("hadron_pid");
+    tupleWriter.addInt("hadron_true");
+    tupleWriter.addInt("hadron_pred");
     tupleWriter.addFloat("hadron_momentum"); 
+    tupleWriter.addFloat("hadron_confidence"); 
     tupleWriter.addFloat("hadron_beta"); 
 
-    pionLikelihood = new DataEventCut_BetaPLikelihood(211);
-    kaonLikelihood = new DataEventCut_BetaPLikelihood(321);
-    protonLikelihood = new DataEventCut_BetaPLikelihood(2212);
- 
-    pionLikelihood->AddPossibleParticle(321); 
-    pionLikelihood->AddPossibleParticle(2212); 
-    kaonLikelihood->AddPossibleParticle(211); 
-    kaonLikelihood->AddPossibleParticle(2212); 
-    protonLikelihood->AddPossibleParticle(211); 
-    protonLikelihood->AddPossibleParticle(321); 
+    likelihoodCuts[211] = new DataEventCut_BetaPLikelihood(211);
+    likelihoodCuts[321] = new DataEventCut_BetaPLikelihood(321);
+    likelihoodCuts[2212] = new DataEventCut_BetaPLikelihood(2212);
 
-    pionLikelihood->Configure(params);
-    kaonLikelihood->Configure(params);
-    protonLikelihood->Configure(params);
+    likelihoodCuts[211]->AddPossibleParticle(321); 
+    likelihoodCuts[211]->AddPossibleParticle(2212); 
+    likelihoodCuts[211]->Configure(params);
+
+    likelihoodCuts[321]->AddPossibleParticle(211); 
+    likelihoodCuts[321]->AddPossibleParticle(2212); 
+    likelihoodCuts[321]->Configure(params);
+
+    likelihoodCuts[2212]->AddPossibleParticle(211); 
+    likelihoodCuts[2212]->AddPossibleParticle(321); 
+    likelihoodCuts[2212]->Configure(params);
   }
 
   ~Analysis(){
@@ -142,34 +146,60 @@ public:
       MonteCarloParticle *mc_electron = getParticle(event, 11, 0.1); 
 
       if (mc_electron->status == mc_status::reconstructed){
+
 	// This is weird, but it's done to change the beta values 
 	// so that the likelihood methods can be used. 
-	event.SetElectronIndex(mc_electron->rec_index); 
-	Corrections::correctEvent(&event, 0, 0); 
+	//	event.SetElectronIndex(mc_electron->rec_index); 
+	//	Corrections::correctEvent(&event, 0, 0); 
 
-	std::vector<int> pionIdx = filter->getVectorOfParticleIndices(event, 211); 
-	std::vector<int> kaonIdx = filter->getVectorOfParticleIndices(event, 321); 
-	std::vector<int> protonIdx = filter->getVectorOfParticleIndices(event, 2212); 
+	// Identifiy particles in dataset 
+	std::map<int, std::pair<int, float> > dataParticles; 
+	for (int ipart = 0; ipart < event.gpart; ipart++) {
+	  if (event.q[ipart] > 0) {
+
+	    if ( likelihoodCuts[211]->IsPassed(event, ipart) ){
+	      dataParticles[ipart] = std::make_pair(211, likelihoodCuts[211]->GetConfidence(211));
+	    }
+	    else if ( likelihoodCuts[321]->IsPassed(event, ipart) ){
+	      dataParticles[ipart] = std::make_pair(321, likelihoodCuts[321]->GetConfidence(321));
+	    }
+	    else if ( likelihoodCuts[2212]->IsPassed(event, ipart) ){
+	      dataParticles[ipart] = std::make_pair(2212, likelihoodCuts[2212]->GetConfidence(2212));
+	    }
+	    else {
+	      dataParticles[ipart] = std::make_pair(0, 0.0);
+	    }
+	  } 
+	  else {
+	    dataParticles[ipart] = std::make_pair(0, 0.0);
+	  }
+	}
 
 	MonteCarloParticle *mc_pion   = getParticle(event,  211, 0.05); 
 	MonteCarloParticle *mc_kaon   = getParticle(event,  321, 0.05); 
 	MonteCarloParticle *mc_proton = getParticle(event, 2212, 0.05); 
 
 	if (mc_pion->status == mc_status::reconstructed){
-	  tupleWriter.setInt("hadron_pid", 211);
+	  tupleWriter.setInt("hadron_true", 211);
+	  tupleWriter.setInt("hadron_pred", dataParticles[mc_pion->rec_index].first);
 	  tupleWriter.setFloat("hadron_momentum", event.p[mc_pion->rec_index]);
+	  tupleWriter.setFloat("hadron_confidence", dataParticles[mc_pion->rec_index].second);
 	  tupleWriter.setFloat("hadron_beta", event.corr_b[mc_pion->rec_index]);
 	  tupleWriter.writeEvent();
 	}
 	if (mc_kaon->status == mc_status::reconstructed){
-	  tupleWriter.setInt("hadron_pid", 321);
+	  tupleWriter.setInt("hadron_true", 321);
+	  tupleWriter.setInt("hadron_pred", dataParticles[mc_kaon->rec_index].first);
 	  tupleWriter.setFloat("hadron_momentum", event.p[mc_kaon->rec_index]);
+	  tupleWriter.setFloat("hadron_confidence", dataParticles[mc_kaon->rec_index].second);
 	  tupleWriter.setFloat("hadron_beta", event.corr_b[mc_kaon->rec_index]);
 	  tupleWriter.writeEvent();
 	}
 	if (mc_proton->status == mc_status::reconstructed){
-	  tupleWriter.setInt("hadron_pid", 2212);
+	  tupleWriter.setInt("hadron_true", 2212);
+	  tupleWriter.setInt("hadron_pred", dataParticles[mc_proton->rec_index].first);
 	  tupleWriter.setFloat("hadron_momentum", event.p[mc_proton->rec_index]);
+	  tupleWriter.setFloat("hadron_confidence", dataParticles[mc_proton->rec_index].second);
 	  tupleWriter.setFloat("hadron_beta", event.corr_b[mc_proton->rec_index]);
 	  tupleWriter.writeEvent();
 	}
@@ -205,8 +235,7 @@ protected:
   Parameters              *params;
   SimpleNTupleWriter       tupleWriter; 
 
-  DataEventCut_BetaPLikelihood *pionLikelihood, *kaonLikelihood, *protonLikelihood; 
-
+  std::map<int, DataEventCut_BetaPLikelihood*> likelihoodCuts; 
 };
 
 int main(int argc, char *argv[]){
