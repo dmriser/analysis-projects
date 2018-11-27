@@ -6,7 +6,7 @@
 #include "TTree.h"
 
 namespace constants {
-  const std::string input_filename("../particle_truth.root");
+  const std::string input_filename("../reset_pid.root");
   const static int n_bins = 80;
   const float p_min = 0.0; 
   const float p_max = 5.5; 
@@ -70,7 +70,6 @@ void write_hadron_fraction_parameters () {
   }
   std::cout << std::endl; 
 
-  /* 
   TCanvas *canvas = new TCanvas("canvas", "canvas", 1600, 500);
   canvas->Divide(3,1);
   
@@ -91,5 +90,4 @@ void write_hadron_fraction_parameters () {
   kaon->Write();
   proton->Write();
   output_file->Close();
-  */
 }
