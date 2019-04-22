@@ -281,7 +281,7 @@ int main(int argc, char * argv[]){
 
     // Setup Options
     h22Options opts;
-    opts.args["PARS"].args = "/u/home/dmriser/Analysis_v2/lists/data.pars";
+    opts.args["PARS"].args = "/u/home/dmriser/clas/analysis-main/lists/parameters/data/final_with_negatives.pars";
     opts.args["PARS"].type = 1;
     opts.args["PARS"].name = "Parameter file";
     opts.args["LIST"].args = "UNSET";
@@ -308,8 +308,8 @@ int main(int argc, char * argv[]){
     Analysis.Loop();
     Analysis.Save(opts.args["OUT"].args);
 
-    //    Analysis.filter->GetSelector(321)->PrintSummary(); 
-    //    Analysis.filter->GetSelector(-321)->PrintSummary(); 
+    //Analysis.filter->GetSelector(321)->PrintSummary(); 
+    //Analysis.filter->GetSelector(-321)->PrintSummary(); 
 
     return 0;
 }
