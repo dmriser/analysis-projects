@@ -47,7 +47,6 @@ public:
 
 MonteCarloParticle * getParticle(h22Event & event, int pid, float tolerance){
   MonteCarloParticle *particle = new MonteCarloParticle(); 
-
   particle->pid = pid; 
 
   for (int igen = 0; igen < event.mcnentr; igen++){

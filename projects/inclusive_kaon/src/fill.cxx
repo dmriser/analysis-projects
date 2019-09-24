@@ -65,6 +65,7 @@ public:
     // setup structure of ntuple 
     tupleWriter.addInt("helicity");
     tupleWriter.addInt("meson_id");
+    tupleWriter.addInt("sector");
     tupleWriter.addFloat("missing_mass"); 
     tupleWriter.addFloat("x"); 
     tupleWriter.addFloat("q2"); 
@@ -190,6 +191,7 @@ public:
 
 	    tupleWriter.setInt("helicity",       event.corr_hel);
 	    tupleWriter.setInt("meson_id",       321);
+	    tupleWriter.setInt("sector",       event.dc_sect[electronIndex]);
 	    tupleWriter.setFloat("missing_mass", sqrt(ev.mm2));
 	    tupleWriter.setFloat("x",            ev.x);
 	    tupleWriter.setFloat("q2",           ev.qq);
